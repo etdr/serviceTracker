@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-
+import React, { FormEvent } from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -9,82 +8,74 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Typography from "@material-ui/core/Typography";
 import { Redirect } from "react-router-dom";
+
 import API_URL from "../../environment";
 
-type AcceptedProps = {
-  fetchTeacherData: any;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  
-  setFirstName: (e: any) => void;
-  setLastName: (e: any) => void;
-  setEmail: (e: any) => void;
-  setPassword: (e: any) => void;
+import { StudentUser } from "../types";
 
-  sessionToken: any;
-  userId: any;
-  setOpen: (e: any) => void;
+interface AcceptedProps extends StudentUser {
+  fetchTeacherData: any;
+
+  sessionToken: string;
+  
+  toggle: () => void;
   open: boolean;
 };
 
-type myState = {
-  previousPassword: string;
+// type myState = {
+//   // previousPassword: string;
  
 
-  update: boolean;
-  setUpdate: (e: any) => void;
-};
+//   // update: boolean;
+//   // setUpdate: (e: any) => void;
+//   firstName: string;
+//   lastName: string;
+//   email: string;
+//   password: string;
+// };
 
-type studentUser = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password?: string;
-};
+// might not be the most correct approach but it is illustrative of Partial types
+type ESAState = Partial<StudentUser>
 
-class EditStudentAccounts extends React.Component<AcceptedProps, myState> {
+// type studentUser = {
+//   firstName: string;
+//   lastName: string;
+//   email: string;
+//   password?: string;
+// };
+
+class EditStudentAccounts extends React.Component<AcceptedProps, ESAState> {
   constructor(props: AcceptedProps) {
     super(props);
     this.state = {
-      previousPassword:this.props.password,
-      update: false,
-      setUpdate: (e) => {
-        this.setState({ update: e });
-      },
+      firstName: this.props.firstName,
+      lastName: this.props.lastName,
+      email: this.props.email,
+      password: ''
     };
   }
 
 
-  handleClickClose = () => {
-    this.props.setOpen(false);
-  };
 
-  handleSubmit = (e:any) => {
+  handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     
-    const studentUser: studentUser = {
-      firstName: this.props.firstName,
-      lastName: this.props.lastName,
-      email: this.props.email,
-    };
-    if (this.props.password !== this.props.userId.password && this.props.password !== "") {
-      studentUser.password = this.props.password;
-    } 
+    // const studentUser: Partial<StudentUser> = {
+    //   firstName: this.state.firstName,
+    //   lastName: this.state.lastName,
+    //   email: this.state.email,
+    //   password: this.state.password
+    // };
+
+    // if (this.props.password !== this.props.userId.password && this.props.password !== "") {
+    //   studentUser.password = this.props.password;
+    // } 
     
-    console.log(studentUser)
-    fetch(`${API_URL}/user/${this.props.userId.id}`, {
+    // console.log(studentUser)
+    fetch(`${API_URL}/user/${this.props.id}`, {
       method: "PUT",
       body: JSON.stringify({
-        studentUser,
-        // studentUser: {
-        //   firstName: this.props.firstName,
-        //   lastName: this.props.lastName,
-        //   email: this.props.email,
-        //   password: this.props.password
-
-        // },
+        studentUser: this.state
       }),
       headers: new Headers({
         "Content-Type": "application/json",
@@ -93,20 +84,20 @@ class EditStudentAccounts extends React.Component<AcceptedProps, myState> {
     })
       .then((res) => res.json())
       .then((json) => {
-        this.state.setUpdate(true);
+        // this.state.setUpdate(true);
 
         this.props.fetchTeacherData();
-        this.props.setOpen(false);
+        // this.props.setOpen(false);
       });
   };
 
   //WHY ISN'T THIS REDIRECT WORKING?
-  checkForUpdate = () => {
-    if (this.state.update) {
-      return <Redirect to="/adminDash" />;
-    }
-    console.log(this.state.update);
-  };
+  // checkForUpdate = () => {
+  //   if (this.state.update) {
+  //     return <Redirect to="/adminDash" />;
+  //   }
+  //   console.log(this.state.update);
+  // };
 
   render() {
     return (
@@ -131,9 +122,9 @@ class EditStudentAccounts extends React.Component<AcceptedProps, myState> {
               type="text"
               fullWidth
               onChange={(e) => {
-                this.props.setFirstName(e.target.value);
+                this.setState({ firstName: e.target.value });
               }}
-              defaultValue={this.props.userId.firstName}
+              defaultValue={this.state.firstName}
             />
             <TextField
               autoFocus
@@ -143,9 +134,9 @@ class EditStudentAccounts extends React.Component<AcceptedProps, myState> {
               type="text"
               fullWidth
               onChange={(e) => {
-                this.props.setLastName(e.target.value);
+                this.setState({ lastName: e.target.value });
               }}
-              defaultValue={this.props.userId.lastName}
+              defaultValue={this.state.lastName}
             />
             <TextField
               autoFocus
@@ -155,9 +146,9 @@ class EditStudentAccounts extends React.Component<AcceptedProps, myState> {
               type="email"
               fullWidth
               onChange={(e) => {
-                this.props.setEmail(e.target.value);
+                this.setState({ email: e.target.value });
               }}
-              defaultValue={this.props.userId.email}
+              defaultValue={this.state.email}
             />
             <TextField
               autoFocus
@@ -167,23 +158,21 @@ class EditStudentAccounts extends React.Component<AcceptedProps, myState> {
               type="password"
               fullWidth
               onChange={(e) => {
-                this.props.setPassword(e.target.value);
+                this.setState({ password: e.target.value });
               }}
-              // defaultValue={this.props.userId.password}
+              defaultValue={this.state.password} // empty by default
             />
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={() => {
-                this.handleClickClose();
-              }}
+              onClick={this.props.toggle}
             >
               Cancel
             </Button>
             <Button type="submit">Submit</Button>
           </DialogActions>
         </form>
-        {this.checkForUpdate()}
+        {/* {this.checkForUpdate()} */}
 
       </Dialog>
     );

@@ -22,14 +22,21 @@ import {
   );
 }
 
-type AcceptedProps={
-  setClassCode?:any,
-  classCode:any,
-  sessionToken?:any
+interface AcceptedProps {
+  // setClassCode?:any,
+  // classCode: any;
+  //sessionToken: string;
 }
 
 
-class StudentPin extends React.Component<AcceptedProps,{}> {
+class StudentPin extends React.Component<AcceptedProps,{ code: string }> {
+  constructor (props: AcceptedProps) {
+    super(props)
+    this.state = {
+      code: ''
+    }
+  }
+
   render() {
     return (
       <div> 
@@ -67,11 +74,11 @@ class StudentPin extends React.Component<AcceptedProps,{}> {
                 id="password"
                 autoComplete="current-password"
                 onChange={(e) => {
-                  this.props.setClassCode(e.target.value)
-                  console.log(this.props.setClassCode)
+                  this.setState({ code: e.target.value })
+                  
               
                 }}
-                defaultValue={this.props.classCode}
+                defaultValue={this.state.code}
               />
         
          

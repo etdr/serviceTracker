@@ -29,11 +29,31 @@ export default class EventScheduleItem extends Component<ESIProps, ESIState> {
       updateOpen: false
     }
     this.toggleUpdateOpen = this.toggleUpdateOpen.bind(this)
+    this.deleteEvent = this.deleteEvent.bind(this)
   }
 
   toggleUpdateOpen () {
     this.setState({ updateOpen: !this.state.updateOpen })
   }
+
+  async deleteEvent (id: number) {
+    try {
+      const response = await fetch(`${API_URL}/events/${id}`, {
+        method: "DELETE",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: this.props.sessionToken,
+        }),
+      });
+      const json = await response.json();
+      console.log(json);
+
+
+      this.props.fetchEvents();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
 
   render() {
@@ -47,14 +67,14 @@ export default class EventScheduleItem extends Component<ESIProps, ESIState> {
           id="panel1d-header"
         >
           <Typography style={{ marginLeft: "5px" }}>
-            {this.state.eventInfo[index].date}
+            {this.props.date}
 
 
 
           </Typography>
           <Typography style={{ marginLeft: "55px" }}>
 
-            {this.state.eventInfo[index].title} <br></br>
+            {this.props.title} <br></br>
 
 
           </Typography>
@@ -66,14 +86,14 @@ export default class EventScheduleItem extends Component<ESIProps, ESIState> {
                   3. I'm sending the id of this entry to fetchEventRequests, so I can collect & store all info related to this id */}
             <EditIcon
               onClick={() => {
-                this.handleClickOpen2();
+                this.toggleUpdateOpen()
 
-                this.state.setEventInfoIndex(
-                  this.state.eventInfo[index]
-                );
-                this.fetchEventRequests(
-                  this.state.eventInfo[index]?.id
-                );
+                // this.state.setEventInfoIndex(
+                //   this.state.eventInfo[index]
+                // );
+                // this.fetchEventRequests(
+                //   this.state.eventInfo[index]?.id
+                // );
 
               }}
             />
@@ -81,7 +101,7 @@ export default class EventScheduleItem extends Component<ESIProps, ESIState> {
             <DeleteIcon
               onClick={() => {
                 try {
-                  this.deleteEvent(this.state.eventInfo[index]?.id);
+                  this.deleteEvent(this.props.id);
 
                 } catch (err) {
                   console.log(err);
@@ -91,8 +111,9 @@ export default class EventScheduleItem extends Component<ESIProps, ESIState> {
 
             <div>
               <UpdateEvent
-                sessionToken={this.props.sessionToken}
-                fetchEvents={this.props.fetchEvents}
+                {...this.props}
+                // sessionToken={this.props.sessionToken}
+                // fetchEvents={this.props.fetchEvents}
                 open={this.state.updateOpen}
                 toggle={this.toggleUpdateOpen}
               />

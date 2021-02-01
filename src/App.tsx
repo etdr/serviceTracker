@@ -207,7 +207,7 @@ class App extends React.Component<{}, myState> {
   // };
 
   render() {
-    if (!this.state.user) return null
+    // if (!this.state.user) return null
     return (
       <div>
         <BrowserRouter>
@@ -254,7 +254,7 @@ class App extends React.Component<{}, myState> {
                 // setIsAdminTrue={this.state.setIsAdminTrue}
                 setBackArrowToggle={this.state.setBackArrowToggle}
                 sessionToken={this.state.sessionToken as string}
-                teacherAccount={this.state.user}
+                teacherAccount={this.state.user as T.TeacherUser}
                 backArrowToggle={this.state.backArrowToggle}
                 // arrowHandler={this.arrowHandler}
                 // key={this.state.sessionToken}
@@ -280,7 +280,7 @@ class App extends React.Component<{}, myState> {
                 // setIsAdminTrue={this.state.setIsAdminTrue}
                 // setIsAdminFalse={this.state.setIsAdminFalse}
                 // setTeacherProfile={this.state.setTeacherProfile}
-               
+              
               />
             </Route>
             <Route exact path="/selectrole">
@@ -325,7 +325,7 @@ class App extends React.Component<{}, myState> {
             </Route>
             <Route exact path="/studentpin">
               <StudentPin
-                classCode={this.state.user.classId}
+                // classCode={this.state.user!.classId}
                 // setClassCode={this.state.setClassCode}
               />
             </Route>
@@ -436,7 +436,7 @@ class App extends React.Component<{}, myState> {
                 backArrowToggle={this.state.backArrowToggle}
                 // arrowHandler={this.arrowHandler}
                 clearToken={this.clearToken}
-                sessionToken={this.state.sessionToken}
+                sessionToken={this.state.sessionToken as string}
                 setBackArrowToggle={this.state.setBackArrowToggle}
                 // classCode={this.state.user.classId}
               />
@@ -449,9 +449,9 @@ class App extends React.Component<{}, myState> {
                 backArrowToggle={this.state.backArrowToggle}
   
                 clearToken={this.clearToken}
-                sessionToken={this.state.sessionToken}
+                sessionToken={this.state.sessionToken as string}
                 setBackArrowToggle={this.state.setBackArrowToggle}
-                classCode={this.state.user.classId}
+                // classCode={this.state.user.classId}
               />
             </Route>
 

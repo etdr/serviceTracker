@@ -93,7 +93,6 @@ class UpdateServiceHours extends Component<AcceptedProps, UpdateServiceHoursStat
     this.props.setBackArrowToggle(true) 
     // this.props.setIsAdminFalse(false);
     this.fetchServiceRequests()
-    console.log(this.props.serviceRequests)
     // console.log(this.props.indexNumber)
     // if (!this.props.sessionToken) {
     //   return <Redirect to="/" />;
@@ -145,7 +144,7 @@ class UpdateServiceHours extends Component<AcceptedProps, UpdateServiceHoursStat
     //   service.hours= this.state.entryById.hours
     // }else{service.hours= this.state.hours}
 
-    fetch(`${API_URL}/service/${this.props.indexNumber}`, {
+    fetch(`${API_URL}/service/${this.props.id}`, {
       method: "PUT",
       body: JSON.stringify({
         // service
@@ -164,8 +163,8 @@ class UpdateServiceHours extends Component<AcceptedProps, UpdateServiceHoursStat
     }).then((response) => {
       if (response.status === 200) {
         console.log("Service update was successful");
-        this.state.setServiceUpdate(true);
-        console.log(response)
+        // this.state.setServiceUpdate(true);
+        // console.log(response)
         
      
         

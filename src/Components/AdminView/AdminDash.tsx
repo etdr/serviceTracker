@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 
 import { faHome, faTrophy } from "@fortawesome/free-solid-svg-icons";
-import { faSearch} from "@fortawesome/free-solid-svg-icons";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { faAddressBook } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Box from "@material-ui/core/Box";
-import { Redirect } from "react-router-dom";
+import { Redirect, Route } from "react-router-dom";
 import AdminSitebar from "../Sitebar/AdminSitebar";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -25,17 +25,15 @@ import StudentLeaderboard from "./StudentLeaderboard/StudentLeaderboard"
 import { TeacherUser } from '../types'
 
 
-const percentage = 66;
-
 type AcceptedProps = {
   sessionToken: string;
   backArrowToggle: any;
   // arrowHandler: any;
   clearToken: () => void;
   teacherAccount: TeacherUser;
-  
+
   setBackArrowToggle: any;
-  
+
 };
 
 type myState = {
@@ -55,26 +53,26 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
   constructor(props: AcceptedProps) {
     super(props);
     this.state = {
-      viewManageHours: false,
-      viewSearch: false,
-      viewEventSchedule: false,
-      viewStudentAccount: false,
-      setViewSearch: (entry) => {
-        this.setState({ viewSearch: entry });
-      },
-      setViewManageHours: (entry) => {
-        this.setState({ viewManageHours: entry });
-      },
-      setViewEventSchedule: (entry) => {
-        this.setState({ viewEventSchedule: entry });
-      },
-      setViewStudentAccount: (entry) => {
-        this.setState({ viewStudentAccount: entry });
-      },
-      classId: [],
-      setClassId: (entry) => {
-        this.setState({ classId: entry });
-      },
+      // viewManageHours: false,
+      // viewSearch: false,
+      // viewEventSchedule: false,
+      // viewStudentAccount: false,
+      // setViewSearch: (entry) => {
+      //   this.setState({ viewSearch: entry });
+      // },
+      // setViewManageHours: (entry) => {
+      //   this.setState({ viewManageHours: entry });
+      // },
+      // setViewEventSchedule: (entry) => {
+      //   this.setState({ viewEventSchedule: entry });
+      // },
+      // setViewStudentAccount: (entry) => {
+      //   this.setState({ viewStudentAccount: entry });
+      // },
+      // classId: [],
+      // setClassId: (entry) => {
+      //   this.setState({ classId: entry });
+      // },
     };
   }
 
@@ -88,39 +86,39 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
     })
       .then((res) => res.json())
       .then((json) => {
-   
-        this.state.setClassId(json.classId);
+
+        // this.state.setClassId(json.classId);
       });
   };
 
-  checkForToken = () => {
+  // checkForToken = () => {
 
-    if (!this.props.sessionToken) {
-      return <Redirect to="/" />;
-    } else if (this.props.isAdmin === false) {
-      return <Redirect to="/myDashboard" />;
-    } else {
-      return <Redirect to="/admindash" />;
-    }
-  };
+  //   if (!this.props.sessionToken) {
+  //     return <Redirect to="/" />;
+  //   } else if (this.props.isAdmin === false) {
+  //     return <Redirect to="/myDashboard" />;
+  //   } else {
+  //     return <Redirect to="/admindash" />;
+  //   }
+  // };
 
   componentDidMount() {
-    this.fetchTeacherData();
+    // this.fetchTeacherData();
     this.props.setBackArrowToggle(false);
-    this.props.setIsAdminTrue(true);
-    this.checkForToken();
+    // this.props.setIsAdminTrue(true);
+    // this.checkForToken();
     // this.props.arrowHandler();
-    
+
   }
 
   render() {
     return (
       <div>
         <AdminSitebar
-        setViewSearch={this.state.setViewSearch}
-          setViewManageHours={this.state.setViewManageHours}
-          setViewStudentAccount={this.state.setViewStudentAccount}
-          setViewEventSchedule={this.state.setViewEventSchedule}
+          // setViewSearch={this.state.setViewSearch}
+          // setViewManageHours={this.state.setViewManageHours}
+          // setViewStudentAccount={this.state.setViewStudentAccount}
+          // setViewEventSchedule={this.state.setViewEventSchedule}
           backArrowToggle={this.props.backArrowToggle}
           clearToken={this.props.clearToken}
           sessionToken={this.props.sessionToken}
@@ -137,65 +135,65 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
               textColor="primary"
               aria-label="icon tabs example"
             >
-           
-              <Tab 
-                 onClick={() => {
+
+              <Tab
+                onClick={() => {
                   this.setState({ viewStudentAccount: false });
                   this.setState({ viewEventSchedule: false });
-                  this.setState({ viewManageHours: false});
+                  this.setState({ viewManageHours: false });
                   this.setState({ viewSearch: true });
                 }}
-              icon={      <FontAwesomeIcon
-                       style={{ color: "white", fontSize: "20px" }}
-                      icon={faTrophy}
-                    />} aria-label="phone" />
+                icon={<FontAwesomeIcon
+                  style={{ color: "white", fontSize: "20px" }}
+                  icon={faTrophy}
+                />} aria-label="phone" />
               <Tab
-                    onClick={() => {
-                      this.setState({ viewSearch:false });
-                      this.setState({ viewStudentAccount: false });
-                      this.setState({ viewEventSchedule: false });
-                      this.setState({ viewManageHours: true });
-                    }}
+                onClick={() => {
+                  this.setState({ viewSearch: false });
+                  this.setState({ viewStudentAccount: false });
+                  this.setState({ viewEventSchedule: false });
+                  this.setState({ viewManageHours: true });
+                }}
                 icon={
                   <FontAwesomeIcon
                     style={{ color: "white", fontSize: "20px" }}
                     icon={faClock}
-              
+
                   />
                 }
                 aria-label="favorite"
               />
               <Tab
-                   onClick={() => {
-                    this.setState({ viewSearch:false });
-                    this.setState({ viewManageHours: false });
-                    this.setState({ viewStudentAccount: false });
-                    this.setState({ viewEventSchedule: true });
-                  }}
+                onClick={() => {
+                  this.setState({ viewSearch: false });
+                  this.setState({ viewManageHours: false });
+                  this.setState({ viewStudentAccount: false });
+                  this.setState({ viewEventSchedule: true });
+                }}
                 icon={
                   <FontAwesomeIcon
                     style={{ color: "white", fontSize: "20px" }}
                     className="admindash_icons"
                     icon={faCalendarAlt}
-               
+
                   />
                 }
                 aria-label="person"
               />
-                 <Tab
-                      onClick={() => {
-                        this.setState({ viewSearch:false });
-                        this.setState({ viewManageHours: false });
-                        this.setState({ viewEventSchedule: false });
-                        this.setState({ viewStudentAccount: true });
-                      }}
+              <Tab
+                onClick={() => {
+                  this.setState({ viewSearch: false });
+                  this.setState({ viewManageHours: false });
+                  this.setState({ viewEventSchedule: false });
+                  this.setState({ viewStudentAccount: true });
+                }}
                 icon={
                   <FontAwesomeIcon
-                  style={{ color: "white", fontSize: "20px" }}
-                  icon={faAddressBook}
-             
-                />
-                
+                    style={{ color: "white", fontSize: "20px" }}
+                    icon={faAddressBook}
+
+                  />
+
                 }
                 aria-label="person"
               />
@@ -215,12 +213,12 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
               <Box className="admindash">
                 <Hidden smDown>
                   <Typography
-                           onClick={() => {
-                            this.setState({ viewSearch:false });
-                            this.setState({ viewStudentAccount: false });
-                            this.setState({ viewEventSchedule: false });
-                            this.setState({ viewManageHours: false});
-                          }}
+                    onClick={() => {
+                      this.setState({ viewSearch: false });
+                      this.setState({ viewStudentAccount: false });
+                      this.setState({ viewEventSchedule: false });
+                      this.setState({ viewManageHours: false });
+                    }}
                     className="adminTitle"
                     component="h2"
                     variant="h5"
@@ -231,20 +229,20 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
                       color: "white",
                     }}
                   >
-                   
+
                   </Typography>
                   {/* <hr /> */}
                 </Hidden>
-      
+
 
                 <Box className="admindash_card">
-                  <h3 
-                           onClick={() => {
-                            this.setState({ viewSearch:true });
-                            this.setState({ viewStudentAccount: false });
-                            this.setState({ viewEventSchedule: false });
-                            this.setState({ viewManageHours: true });
-                          }}
+                  <h3
+                    onClick={() => {
+                      this.setState({ viewSearch: true });
+                      this.setState({ viewStudentAccount: false });
+                      this.setState({ viewEventSchedule: false });
+                      this.setState({ viewManageHours: true });
+                    }}
                     className="marginBottom"
                     style={{ cursor: "pointer", color: "white" }}
                   >
@@ -261,7 +259,7 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
                   className="marginBottom"
                   style={{ cursor: "pointer", color: "white" }}
                   onClick={() => {
-                    this.setState({ viewSearch:false });
+                    this.setState({ viewSearch: false });
                     this.setState({ viewStudentAccount: false });
                     this.setState({ viewEventSchedule: false });
                     this.setState({ viewManageHours: true });
@@ -276,7 +274,7 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
                   className="marginBottom"
                   style={{ cursor: "pointer", color: "white" }}
                   onClick={() => {
-                    this.setState({ viewSearch:false });
+                    this.setState({ viewSearch: false });
                     this.setState({ viewStudentAccount: false });
                     this.setState({ viewManageHours: false });
                     this.setState({ viewEventSchedule: true });
@@ -294,7 +292,7 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
                   className="marginBottom"
                   style={{ cursor: "pointer", color: "white" }}
                   onClick={() => {
-                    this.setState({ viewSearch:false });
+                    this.setState({ viewSearch: false });
                     this.setState({ viewManageHours: false });
                     this.setState({ viewEventSchedule: false });
                     this.setState({ viewStudentAccount: true });
@@ -303,47 +301,50 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
                   <FontAwesomeIcon
                     className="admindash_icons"
                     icon={faAddressBook}
-                    
+
                   />
                   <Hidden smDown>Accounts</Hidden>
                 </h3>
-     
+
               </Box>
             </Grid>
           </Hidden>
 
-          {this.state.viewStudentAccount ? (
+          
+          <Route path="/teacher/manage-accounts">
             <>
-          <Hidden xsDown>
+              <Hidden xsDown>
                 <Grid item xs={1} sm={1} md={1} lg={1}>
                   {" "}
                 </Grid>
               </Hidden>
               <Grid item xs={12} sm={8} md={8} lg={8}>
                 <ManageAccounts
-                  setIsAdminTrue={this.props.setIsAdminTrue}
+                  // setIsAdminTrue={this.props.setIsAdminTrue}
                   teacherAccount={this.props.teacherAccount}
                   backArrowToggle={this.props.backArrowToggle}
                   clearToken={this.props.clearToken}
                   sessionToken={this.props.sessionToken}
                   setBackArrowToggle={this.props.setBackArrowToggle}
-                ></ManageAccounts>{" "}
+                />{" "}
               </Grid>{" "}
             </>
-          ) : this.state.viewSearch ? (
-            <>         <Hidden xsDown>
-            <Grid item xs={1} sm={1} md={1} lg={1}>
-              {" "}
-            </Grid>
-          </Hidden>
-          <Grid item xs={12} sm={9} md={8} lg={8}>
-            <StudentLeaderboard
-             sessionToken={this.props.sessionToken}
-           
-            ></StudentLeaderboard>
-          </Grid> </>
-
-          ):  this.state.viewEventSchedule ? (
+          </Route>
+          <Route path="/teacher/search">
+            <>
+              <Hidden xsDown>
+                <Grid item xs={1} sm={1} md={1} lg={1}>
+                  {" "}
+                </Grid>
+              </Hidden>
+              <Grid item xs={12} sm={9} md={8} lg={8}>
+                <StudentLeaderboard
+                  sessionToken={this.props.sessionToken}
+                ></StudentLeaderboard>
+              </Grid>
+            </>
+          </Route>
+          <Route path="/teacher/event-schedule">
             <>
               <Hidden xsDown>
                 <Grid item xs={1} sm={1} md={1} lg={1}>
@@ -352,7 +353,7 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
               </Hidden>
               <Grid item xs={12} sm={9} md={8} lg={8}>
                 <EventSchedule
-                  setIsAdminTrue={this.props.setIsAdminTrue}
+                  // setIsAdminTrue={this.props.setIsAdminTrue}
                   backArrowToggle={this.props.backArrowToggle}
                   // arrowHandler={this.arrowHandler}
                   clearToken={this.props.clearToken}
@@ -361,13 +362,14 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
                 ></EventSchedule>{" "}
               </Grid>
             </>
-          ) : this.state.viewManageHours ? (
+          </Route>
+          <Route path="/teacher/manage-hours">
             <>
           
               <Grid item xs={12} sm={10} md={10} lg={9}>
                 <ManageHoursTable
                   teacherAccount={this.props.teacherAccount}
-                  setIsAdminTrue={this.props.setIsAdminTrue}
+                  // setIsAdminTrue={this.props.setIsAdminTrue}
                   backArrowToggle={this.props.backArrowToggle}
                   clearToken={this.props.clearToken}
                   sessionToken={this.props.sessionToken}
@@ -375,20 +377,18 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
                 ></ManageHoursTable>{" "}
               </Grid>{" "}
             </>
-          ) : (
+          </Route>
+          <Route exact path="/teacher">
             <Grid item xs={12} sm={8} md={9} lg={10} >
               <div className="clip" > <img className="clipPhoto" src={clipboard}></img>
-              <div className="classCodeImage"> <h2 className="signupTitle" >Class Code </h2>    <h2 className="classCodeId classCodeNumber" >{this.state.classId}</h2> </div>
-             </div>
-             
-
-
-            </Grid> 
-
-          )}
+                <div className="classCodeImage"> <h2 className="signupTitle" >Class Code </h2>    <h2 className="classCodeId classCodeNumber" >{this.props.teacherAccount.classId}</h2> </div>
+              </div>
+            </Grid>
+            </Route>
+          
         </Grid>
 
-       
+
       </div>
     );
   }

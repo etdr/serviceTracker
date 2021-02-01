@@ -139,24 +139,7 @@ class EventSchedule extends React.Component<AcceptedProps, myState> {
 
   //This function deletes a specific event when the user clicks trashcan
   //After deleting the event, fetchEvents() is called, to get updated info
-  deleteEvent = async (id: number) => {
-    try {
-      const response = await fetch(`${API_URL}/events/${id}`, {
-        method: "DELETE",
-        headers: new Headers({
-          "Content-Type": "application/json",
-          Authorization: this.props.sessionToken,
-        }),
-      });
-      const json = await response.json();
-      console.log(json);
 
-
-      this.fetchEvents();
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   //This fetch is specifically used to populate the chart
   fetchEvents () {

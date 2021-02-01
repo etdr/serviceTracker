@@ -15,12 +15,12 @@ import API_URL from "../../environment";
 type AcceptedProps = {
   backArrowToggle: any;
   // arrowHandler: any;
-  clearToken: any;
-  sessionToken: any;
-  setViewManageHours:  (e: any) => void;
-  setViewStudentAccount:  (e: any) => void;
-  setViewEventSchedule:  (e: any) => void;
-  setViewSearch:  (e: any) => void;
+  clearToken: () => void;
+  sessionToken: string | null;
+  // setViewManageHours:  (e: any) => void;
+  // setViewStudentAccount:  (e: any) => void;
+  // setViewEventSchedule:  (e: any) => void;
+  // setViewSearch:  (e: any) => void;
 };
 
 type myState = {
@@ -52,7 +52,7 @@ class AdminSitebar extends React.Component<AcceptedProps, myState> {
                 method: 'DELETE',
                 headers: new Headers({
                     'Content-Type': 'application/json',
-                    'Authorization': this.props.sessionToken
+                    'Authorization': this.props.sessionToken as string
                 })
             })
             const json= await response.json()
@@ -121,15 +121,15 @@ class AdminSitebar extends React.Component<AcceptedProps, myState> {
     const { anchorE1 } = this.state;
     const open = Boolean(this.state.anchorE1);
     return (
-      <React.Fragment>
+      <>
         <AppBar style={{backgroundColor:"white"}} position="absolute">
           <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
             <IconButton className="signupTitle" style={{fontSize: "20px"}}
              onClick={() => {
-              this.props.setViewSearch(false );
-              this.props.setViewManageHours(false );
-              this.props.setViewEventSchedule(false );
-              this.props.setViewStudentAccount(false );
+              // this.props.setViewSearch(false );
+              // this.props.setViewManageHours(false );
+              // this.props.setViewEventSchedule(false );
+              // this.props.setViewStudentAccount(false );
            
             }}
           
@@ -174,7 +174,7 @@ class AdminSitebar extends React.Component<AcceptedProps, myState> {
         </AppBar>
    
         {this.checkForToken()}
-      </React.Fragment>
+      </>
     );
   }
 }

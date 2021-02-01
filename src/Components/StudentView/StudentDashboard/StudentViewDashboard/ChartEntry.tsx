@@ -86,12 +86,12 @@ export default class ChartEntry extends Component<ChartEntryProps, {}> {
 
             // }}
           >
-            {this.props.id ===
-              this.state.itemId ? (
+            {/* {this.props.id ===
+              this.state.itemId ? ( */}
               <KeyboardArrowUpIcon />
-            ) : (
+            {/* ) : (
               <KeyboardArrowDownIcon />
-            )}
+            )} */}
           </IconButton>
           <TableCell align="left">
             {" "}
@@ -170,7 +170,7 @@ export default class ChartEntry extends Component<ChartEntryProps, {}> {
                   </Link>
                   <DeleteIcon
                     onClick={() => {
-                      this.deleteEntryAsync2();
+                      this.deleteEntry();
                     }}
                   />
                 </Box>
