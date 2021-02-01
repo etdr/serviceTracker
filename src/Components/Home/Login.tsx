@@ -68,78 +68,78 @@ class Login extends React.Component<AcceptedProps, LoginState> {
       // lastName: '',
       password: ''
     }
-    this.handleSubmit = this.handleSubmit.bind(this)
+    // this.handleSubmit = this.handleSubmit.bind(this)
     this.handleSubmitAsync = this.handleSubmitAsync.bind(this)
   }
 
   //Nested Fetches- This setup allows a student & a teacher to log in using the same form.
   //It takes the inputted information, determines if student or teacher, and then shows proper page
-  handleSubmit (event: FormEvent) {
-    event.preventDefault();
-    fetch(`${API_URL}/user/login`, {
-      method: "POST",
-      body: JSON.stringify({
-        studentUser: {
-          // firstName: this.props.firstName,
-          // lastName: this.props.lastName,
-          email: this.state.email,
-          password: this.state.password,
-          // classId: this.props.classCode,
-        },
-      }),
-      headers: new Headers({
-        "Content-Type": "application/json",
-      }),
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          console.log("Login was successful");
-        } else {
-          console.log("Login in failed");
-        }
-        return response.json();
-      })
-      .then((json: StudentAuthResponse) => {
-        // this.props.setIsAdminFalse(false);
-        this.props.updateToken(json.sessionToken);
-        if (this.props.sessionToken) {
-          console.log("yes");
-        } else {
-          fetch(`${API_URL}/teacheruser/login`, {
-            method: "POST",
-            body: JSON.stringify({
-              teacherUser: {
-                email: this.state.email,
-                password: this.state.password,
-              },
-            }),
-            headers: new Headers({
-              "Content-Type": "application/json",
-            }),
-          })
-            .then((response) => {
-              if (response.status === 200) {
-                console.log("Login was successful");
-              } else {
-                console.log("Login in failed");
-              }
-              return response.json();
-            })
-            .then((json) => {
-              // this.props.setIsAdminTrue(true);
+  // handleSubmit (event: FormEvent) {
+  //   event.preventDefault();
+  //   fetch(`${API_URL}/user/login`, {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       studentUser: {
+  //         // firstName: this.props.firstName,
+  //         // lastName: this.props.lastName,
+  //         email: this.state.email,
+  //         password: this.state.password,
+  //         // classId: this.props.classCode,
+  //       },
+  //     }),
+  //     headers: new Headers({
+  //       "Content-Type": "application/json",
+  //     }),
+  //   })
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         console.log("Login was successful");
+  //       } else {
+  //         console.log("Login in failed");
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((json: StudentAuthResponse) => {
+  //       // this.props.setIsAdminFalse(false);
+  //       this.props.updateToken(json.sessionToken);
+  //       if (this.props.sessionToken) {
+  //         console.log("yes");
+  //       } else {
+  //         fetch(`${API_URL}/teacheruser/login`, {
+  //           method: "POST",
+  //           body: JSON.stringify({
+  //             teacherUser: {
+  //               email: this.state.email,
+  //               password: this.state.password,
+  //             },
+  //           }),
+  //           headers: new Headers({
+  //             "Content-Type": "application/json",
+  //           }),
+  //         })
+  //           .then((response) => {
+  //             if (response.status === 200) {
+  //               console.log("Login was successful");
+  //             } else {
+  //               console.log("Login in failed");
+  //             }
+  //             return response.json();
+  //           })
+  //           .then((json) => {
+  //             // this.props.setIsAdminTrue(true);
 
-              // if (json !== undefined) {
-              //   this.props.setTeacherProfile(json);
-              // } else {
-              //   this.props.setTeacherProfile([]);
-              // }
-              this.props.updateToken(json.sessionToken);
-              this.props.setUser(json.teacherUser)
-              this.setState({ redirect: '/teacher/dashboard' })
-            });
-        }
-      });
-  };
+  //             // if (json !== undefined) {
+  //             //   this.props.setTeacherProfile(json);
+  //             // } else {
+  //             //   this.props.setTeacherProfile([]);
+  //             // }
+  //             this.props.updateToken(json.sessionToken);
+  //             this.props.setUser(json.teacherUser)
+  //             this.setState({ redirect: '/teacher/dashboard' })
+  //           });
+  //       }
+  //     });
+  // };
 
   async handleSubmitAsync (event: FormEvent) {
     event.preventDefault()

@@ -71,6 +71,8 @@ export default class ManageHoursTable extends React.Component<AcceptedProps, myS
       //   this.setState({ open: e });
       // },
     };
+
+    this.fetchServiceRequests = this.fetchServiceRequests.bind(this)
   }
 
   componentDidMount() {
@@ -137,9 +139,9 @@ export default class ManageHoursTable extends React.Component<AcceptedProps, myS
   //   });
   // };
 
-  fetchServiceRequests (type?: string) {
+  fetchServiceRequests (type?: ServiceStatus) {
 
-    const url = `${API_URL}/service/${this.state.statusView || 'Pending'}`
+    const url = `${API_URL}/service/status/${type || 'Pending'}`
 
     fetch(url, {
       method: "GET",
@@ -224,7 +226,11 @@ export default class ManageHoursTable extends React.Component<AcceptedProps, myS
           <TableBody>
             {this.state.serviceRequests.length > 0 ? (
               this.state.serviceRequests.map((service: any, index: any) => (
-                <ManageHoursEntry {...service} sessionToken={this.props.sessionToken} statusView={this.state.statusView} />
+                <ManageHoursEntry
+                  {...service}
+                  sessionToken={this.props.sessionToken}
+                  statusView={this.state.statusView}
+                  fetchServiceRequests={this.fetchServiceRequests} />
               ))
             ) : (
               <div></div>

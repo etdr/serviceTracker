@@ -23,7 +23,7 @@ type AcceptedProps = {
   // firstName: string;
   // lastName: string;
   
-  key: any;
+  // key: any;
   backArrowToggle: any;
   arrowHandler?: any;
   setBackArrowToggle: (e: any) => void;

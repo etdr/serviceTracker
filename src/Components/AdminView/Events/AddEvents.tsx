@@ -24,7 +24,7 @@ type AcceptedProps = {
   // setOpen: (e: any) => void;
   fetchEvents: any;
   open: boolean;
-  toggleOpen: () => void;
+  toggle: () => void;
 };
 
 
@@ -61,6 +61,8 @@ class AddEvent extends Component<AcceptedProps, myState> {
       // setDescription: (e) => {this.setState({description: e})},
       // setTitle: (e) => {this.setState({title: e})},
     };
+
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   handleSubmit (event: any) {
@@ -218,9 +220,7 @@ class AddEvent extends Component<AcceptedProps, myState> {
 
             <DialogActions>
               <Button
-                onClick={() => {
-                  this.props.toggleOpen()
-                }}
+                onClick={this.props.toggle}
               >
                 Cancel
               </Button>

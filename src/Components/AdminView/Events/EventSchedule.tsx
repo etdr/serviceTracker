@@ -111,10 +111,13 @@ class EventSchedule extends React.Component<AcceptedProps, myState> {
 
       addEventOpen: false
     };
+
+    this.toggleAddEventOpen = this.toggleAddEventOpen.bind(this)
   }
 
   //This function opens up ADD EVENTS modal
   toggleAddEventOpen () {
+    console.log('toggling add event')
     this.setState({ addEventOpen: !this.state.addEventOpen });
   };
 
@@ -212,7 +215,10 @@ class EventSchedule extends React.Component<AcceptedProps, myState> {
                 className="toRight"
               >
 
-                <Button variant="contained" style={{ backgroundColor: "#5390d9", color: "white", width: "150px" }}>
+                <Button
+                  variant="contained"
+                  style={{ backgroundColor: "#5390d9", color: "white", width: "150px" }}
+                  onClick={this.toggleAddEventOpen} >
                   <AddBoxIcon onClick={this.toggleAddEventOpen} />
                   <h5 style={{ color: "white", marginLeft: "5px" }}>Add Event</h5>
                 </Button>
@@ -231,7 +237,7 @@ class EventSchedule extends React.Component<AcceptedProps, myState> {
                   fetchEvents={this.fetchEvents}
                   open={this.state.addEventOpen}
                   // eventInfo={this.state.eventInfo}
-                  toggleOpen={this.toggleAddEventOpen}
+                  toggle={this.toggleAddEventOpen}
                   sessionToken={this.props.sessionToken}
                 />
               </div>

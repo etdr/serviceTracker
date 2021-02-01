@@ -15,6 +15,12 @@ import AdminDash from "./Components/AdminView/AdminDash";
 import EventSchedule from "./Components/AdminView/Events/EventSchedule";
 import ManageAccounts from "./Components/AdminView/ManageAccounts";
 
+import API_URL from './environment'
+
+import Auth from './Components/Auth/Auth'
+import TeacherView from './Components/AdminView/TeacherView'
+import StudentView from './Components/StudentView/StudentView'
+
 import ManageHoursTable from "./Components/AdminView/ManageHours";
 
 import * as T from './Components/types'
@@ -146,16 +152,18 @@ class App extends React.Component<{}, myState> {
 
     };
 
-    this.collectToken = this.collectToken.bind(this)
+    this.collectTokenAndFetch = this.collectTokenAndFetch.bind(this)
     this.updateToken = this.updateToken.bind(this)
     this.clearToken = this.clearToken.bind(this)
     this.setUser = this.setUser.bind(this)
+
+    this.collectTokenAndFetch()
   }
 
 
   componentDidMount() {
     console.log("[App.js] component did mount");
-    this.collectToken();
+    // this.collectToken();
   }
 
   //fetchTeacherStuff is called when you login
@@ -164,10 +172,13 @@ class App extends React.Component<{}, myState> {
   //token is unique identifier 
 
   //Here we are calling the setState() method and updating our value of session token
-  collectToken() {
+  async collectTokenAndFetch() {
     const sessionToken = localStorage.getItem('token')
     if (sessionToken) {
-      this.setState({ sessionToken });
+      this.setState({
+        sessionToken,
+        user: await this.fetchLoggedInUser(sessionToken)
+      });
     } else {
       console.log("goodbye");
     }
@@ -193,7 +204,29 @@ class App extends React.Component<{}, myState> {
     this.setState({ user })
   }
 
-
+  async fetchLoggedInUser (token: string): Promise<T.User | null> {
+    const studentResult = await fetch(`${API_URL}/user/me`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: token
+        }
+      }
+    )
+    if (studentResult.status !== 200) {
+      const teacherResult = await fetch(`${API_URL}/teacheruser/me`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: token
+          }
+        }
+      )
+      if (teacherResult.status !== 200) return null
+      return teacherResult.json()
+    }
+    return studentResult.json()
+  }
 
 
 
@@ -214,128 +247,40 @@ class App extends React.Component<{}, myState> {
       
 
  
-  <Route exact path="/login">
-    <Login
-      updateToken={this.updateToken}
-      // firstName={this.state.firstName}
-      // lastName={this.state.lastName}
-      // email={this.state.email}
-      // password={this.state.password}
-      sessionToken={this.state.sessionToken}
-      // setEmail={this.state.setEmail}
-      // setPassword={this.state.setPassword}
-      // classCode={this.state.classCode}
-      // setClassCode={this.state.setClassCode}
-      // collectToken={this.collectToken}
-      // isAdmin={this.state.isAdmin}
-      // setIsAdminTrue={this.state.setIsAdminTrue}
-      // setIsAdminFalse={this.state.setIsAdminFalse}
-      // setTeacherProfile={this.state.setTeacherProfile}
-      setUser={this.setUser}
-      // user={this.state.user}
-    />
-  </Route>
-  <Route exact path="/selectrole">
-    <SelectRole />
-  </Route>
-  <Route exact path="/signup">
-    <Signup
-      updateToken={this.updateToken}
-      // firstName={this.state.firstName}
-      // lastName={this.state.lastName}
-      // email={this.state.email}
-      // password={this.state.password}
-      sessionToken={this.state.sessionToken}
-      // setEmail={this.state.setEmail}
-      // setPassword={this.state.setPassword}
-      // classCode={this.state.classCode}
-      // setClassCode={this.state.setClassCode}
-      // setFirstName={this.state.setFirstName}
-      // setLastName={this.state.setLastName}
-      // setIsAdminFalse={this.state.setIsAdminFalse}
-      setUser={this.setUser}
-    />
-  </Route>
-  <Route exact path="/adminsignup">
-    <AdminSignup
-      updateToken={this.updateToken}
-      // firstName={this.state.firstName}
-      // lastName={this.state.lastName}
-      // email={this.state.email}
-      // password={this.state.password}
-      sessionToken={this.state.sessionToken}
-      // setEmail={this.state.setEmail}
-      // setPassword={this.state.setPassword}
-      // classCode={this.state.classCode}
-      // setClassCode={this.state.setClassCode}
-      // setFirstName={this.state.setFirstName}
-      // setLastName={this.state.setLastName}
-      // teacherAccount={this.state.teacherAccount}
-      // setTeacherProfile={this.state.setTeacherProfile}
-      setUser={this.setUser}
-    />
-  </Route>
-  <Route exact path="/studentpin">
-    <StudentPin
-      // classCode={this.state.user!.classId}
-      // setClassCode={this.state.setClassCode}
-    />
-  </Route>
-  <Route exact path="/teacherpin/:pin">
-    <TeacherPin
-      // sessionToken={this.state.sessionToken}
-      // teacherAccount={this.state.user as T.TeacherUser} />
-      />
-  </Route>
-          
+  
 
-            {/* <Route path="/auth">
-              <Auth />
+            <Route path="/auth">
+              <Auth
+                user={this.state.user}
+                setUser={this.setUser}
+                sessionToken={this.state.sessionToken}
+                updateToken={this.updateToken} />
             </Route>
+            
 
             <Route path="/student">
-              <StudentView />
+              <StudentView
+                backArrowToggle={this.state.backArrowToggle}
+                setBackArrowToggle={this.state.setBackArrowToggle}
+                
+                user={this.state.user as T.StudentUser}
+                sessionToken={this.state.sessionToken as string}
+                clearToken={this.clearToken} />
             </Route>
+           
 
             <Route path="/teacher">
-              <TeacherView />
-            </Route> */}
+              <TeacherView 
+                backArrowToggle={this.state.backArrowToggle}
+                setBackArrowToggle={this.state.setBackArrowToggle}
+                
+                user={this.state.user as T.TeacherUser}
+                sessionToken={this.state.sessionToken as string}
+                clearToken={this.clearToken} />
+            </Route>
 
-            <Route exact path="/mydashboard">
-                  <MyDashboard
-                    user={this.state.user as T.StudentUser}
-                    
-                    // indexNumber={this.state.indexNumber}
-                    // setIndexNumber={this.state.setIndexNumber}
-                    // specificEntry={this.state.specificEntry}
-                    // // setSpecificEntry={this.state.setSpecificEntry}
-                    // isAdmin={this.state.isAdmin}
-                    
-                    sessionToken={this.state.sessionToken as string}
-                    backArrowToggle={this.state.backArrowToggle}
-                    // arrowHandler={this.arrowHandler}
-                    key={this.state.sessionToken}
-                    // setIsAdminFalse={this.state.setIsAdminFalse}
-                    clearToken={this.clearToken}
-                    // serviceRequests={this.state.serviceRequests}
-                    // setServiceRequests={this.state.setServiceRequests}
-                    setBackArrowToggle={this.state.setBackArrowToggle}
-                  />
-                </Route>
-                <Route exact path="/teacher/dashboard">
-                <AdminDash
-                  // setIsAdminTrue={this.state.setIsAdminTrue}
-                  setBackArrowToggle={this.state.setBackArrowToggle}
-                  sessionToken={this.state.sessionToken as string}
-                  teacherAccount={this.state.user as T.TeacherUser}
-                  backArrowToggle={this.state.backArrowToggle}
-                  // arrowHandler={this.arrowHandler}
-                  // key={this.state.sessionToken}
-                  clearToken={this.clearToken}
-                  // isAdmin={this.state.isAdmin}
-                />
-              </Route>
 
+                
 
 
             {/* <Route exact path="/chart">
@@ -350,28 +295,7 @@ class App extends React.Component<{}, myState> {
               />
             </Route> */}
 
-            <Route exact path="/addservice">
-              <AddServiceHours
-                setBackArrowToggle={this.state.setBackArrowToggle}
-                // setIsAdminFalse={this.state.setIsAdminFalse}
 
-                backArrowToggle={this.state.backArrowToggle}
-                // arrowHandler={this.arrowHandler}
-                clearToken={this.clearToken}
-                sessionToken={this.state.sessionToken as string}
-              // date= {this.state.date}
-              // typeOfService= {this.state.typeOfService}
-              // description= {this.state.description}
-              // hours= {this.state.hours}
-              // status={this.state.status}
-              // studentUserId={this.state.studentUserId}
-              // setDate={this.state.setDate}
-              // setTypeOfService={this.state.setTypeOfService}
-              // setDescription={this.state.setDescription}
-              // setHours={this.state.setHours}
-              // setStatus={this.state.setStatus}
-              />
-            </Route>
             {/* <Route exact path="/editservice">
               <UpdateServiceHours
                 // specificEntry={this.state.specificEntry}
@@ -400,18 +324,7 @@ class App extends React.Component<{}, myState> {
                
               /> 
             </Route> */}
-            <Route exact path="/events">
-              <ViewEvents
-                setBackArrowToggle={this.state.setBackArrowToggle}
-                // setIsAdminFalse={this.state.setIsAdminFalse}
-                // isAdmin={this.state.isAdmin}
-                backArrowToggle={this.state.backArrowToggle}
-                // arrowHandler={this.arrowHandler}
-                clearToken={this.clearToken}
-                sessionToken={this.state.sessionToken as string}
-
-              />
-            </Route>
+            
             {/* <Route exact path="/admindash">
               <AdminDash
                 sessionToken={this.state.sessionToken}
@@ -423,69 +336,35 @@ class App extends React.Component<{}, myState> {
                 isAdmin={this.state.isAdmin}
               />
             </Route> */}
-            <Route exact path="/adminevent">
-              <EventSchedule
-                // setIsAdminTrue={this.state.setIsAdminTrue}
-                setBackArrowToggle={this.state.setBackArrowToggle}
-                backArrowToggle={this.state.backArrowToggle}
-                // arrowHandler={this.arrowHandler}
-                clearToken={this.clearToken}
-                sessionToken={this.state.sessionToken as string}
-              />
-            </Route>
-            <Route exact path="/manageaccounts">
-              <ManageAccounts
-                // setIsAdminTrue={this.state.setIsAdminTrue}
-                teacherAccount={this.state.user as T.TeacherUser}
-                backArrowToggle={this.state.backArrowToggle}
-                // arrowHandler={this.arrowHandler}
-                clearToken={this.clearToken}
-                sessionToken={this.state.sessionToken as string}
-                setBackArrowToggle={this.state.setBackArrowToggle}
-              // classCode={this.state.user.classId}
-              />
-            </Route>
+            
 
-            <Route exact path="/managehours">
-              <ManageHoursTable
-                // setIsAdminTrue={this.state.setIsAdminTrue}
-                teacherAccount={this.state.user as T.TeacherUser}
-                backArrowToggle={this.state.backArrowToggle}
-
-                clearToken={this.clearToken}
-                sessionToken={this.state.sessionToken as string}
-                setBackArrowToggle={this.state.setBackArrowToggle}
-              // classCode={this.state.user.classId}
-              />
-            </Route>
-
-            <Route exact path="/eventupdate">
-              {/* <UpdateEvents  
+            {/* <Route exact path="/eventupdate">
+              <UpdateEvents  
               clearToken={this.clearToken}
                 setIsAdminTrue={this.state.setIsAdminTrue}
                 backArrowToggle={this.state.backArrowToggle}
                 sessionToken={this.state.sessionToken}
                 setBackArrowToggle={this.state.setBackArrowToggle}
              
-              /> */}
+              />
             </Route>
 
             <Route exact path="/addevent">
-              {/* <AddEvent  
+               <AddEvent  
               clearToken={this.clearToken}
                 setIsAdminTrue={this.state.setIsAdminTrue}
                 backArrowToggle={this.state.backArrowToggle}
                 sessionToken={this.state.sessionToken}
                 setBackArrowToggle={this.state.setBackArrowToggle}
              
-              /> */}
-            </Route>
+              /> 
+            </Route> */}
 
 
             <Route exact path="/">
               {this.state.user
                 ? (this.state.user.teacher ? <Redirect to="/teacher/dashboard" /> : <Redirect to="/student/dashboard" />)
-                : <Redirect to="/login" />
+                : <Redirect to="/auth/login" />
               }
             </Route>
 

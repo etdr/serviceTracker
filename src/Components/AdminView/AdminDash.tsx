@@ -7,7 +7,7 @@ import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { faAddressBook } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Box from "@material-ui/core/Box";
-import { Redirect, Route } from "react-router-dom";
+import { Redirect, Route, Link } from "react-router-dom";
 import AdminSitebar from "../Sitebar/AdminSitebar";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -136,24 +136,12 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
               aria-label="icon tabs example"
             >
 
-              <Tab
-                onClick={() => {
-                  this.setState({ viewStudentAccount: false });
-                  this.setState({ viewEventSchedule: false });
-                  this.setState({ viewManageHours: false });
-                  this.setState({ viewSearch: true });
-                }}
+              <Link to="/teacher/leaderboard"><Tab
                 icon={<FontAwesomeIcon
                   style={{ color: "white", fontSize: "20px" }}
                   icon={faTrophy}
-                />} aria-label="phone" />
+                />} aria-label="phone" /></Link>
               <Tab
-                onClick={() => {
-                  this.setState({ viewSearch: false });
-                  this.setState({ viewStudentAccount: false });
-                  this.setState({ viewEventSchedule: false });
-                  this.setState({ viewManageHours: true });
-                }}
                 icon={
                   <FontAwesomeIcon
                     style={{ color: "white", fontSize: "20px" }}
@@ -164,12 +152,6 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
                 aria-label="favorite"
               />
               <Tab
-                onClick={() => {
-                  this.setState({ viewSearch: false });
-                  this.setState({ viewManageHours: false });
-                  this.setState({ viewStudentAccount: false });
-                  this.setState({ viewEventSchedule: true });
-                }}
                 icon={
                   <FontAwesomeIcon
                     style={{ color: "white", fontSize: "20px" }}
@@ -181,12 +163,6 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
                 aria-label="person"
               />
               <Tab
-                onClick={() => {
-                  this.setState({ viewSearch: false });
-                  this.setState({ viewManageHours: false });
-                  this.setState({ viewEventSchedule: false });
-                  this.setState({ viewStudentAccount: true });
-                }}
                 icon={
                   <FontAwesomeIcon
                     style={{ color: "white", fontSize: "20px" }}
@@ -212,13 +188,8 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
             >
               <Box className="admindash">
                 <Hidden smDown>
+                  {/* Eli: not sure what this is doing */}
                   <Typography
-                    onClick={() => {
-                      this.setState({ viewSearch: false });
-                      this.setState({ viewStudentAccount: false });
-                      this.setState({ viewEventSchedule: false });
-                      this.setState({ viewManageHours: false });
-                    }}
                     className="adminTitle"
                     component="h2"
                     variant="h5"
@@ -234,15 +205,9 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
                   {/* <hr /> */}
                 </Hidden>
 
-
-                <Box className="admindash_card">
+                <Link to="/teacher/leaderboard">
+                
                   <h3
-                    onClick={() => {
-                      this.setState({ viewSearch: true });
-                      this.setState({ viewStudentAccount: false });
-                      this.setState({ viewEventSchedule: false });
-                      this.setState({ viewManageHours: true });
-                    }}
                     className="marginBottom"
                     style={{ cursor: "pointer", color: "white" }}
                   >
@@ -253,8 +218,10 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
                     />
                     <Hidden smDown>Totals</Hidden>
                   </h3>
-                </Box>
+                
+                </Link>
 
+                <Link to="/teacher/manage-hours">
                 <h3
                   className="marginBottom"
                   style={{ cursor: "pointer", color: "white" }}
@@ -269,7 +236,9 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
                   <FontAwesomeIcon className="admindash_icons" icon={faClock} />
                   <Hidden smDown>Hours</Hidden>
                 </h3>
+                </Link>
 
+                <Link to="/teacher/manage-events">
                 <h3
                   className="marginBottom"
                   style={{ cursor: "pointer", color: "white" }}
@@ -287,7 +256,9 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
                   />
                   <Hidden smDown>Events</Hidden>
                 </h3>
+                </Link>
 
+                <Link to="/teacher/manage-accounts">
                 <h3
                   className="marginBottom"
                   style={{ cursor: "pointer", color: "white" }}
@@ -305,6 +276,7 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
                   />
                   <Hidden smDown>Accounts</Hidden>
                 </h3>
+                </Link>
 
               </Box>
             </Grid>
@@ -330,7 +302,7 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
               </Grid>{" "}
             </>
           </Route>
-          <Route path="/teacher/search">
+          <Route path="/teacher/leaderboard">
             <>
               <Hidden xsDown>
                 <Grid item xs={1} sm={1} md={1} lg={1}>
@@ -344,7 +316,7 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
               </Grid>
             </>
           </Route>
-          <Route path="/teacher/event-schedule">
+          <Route path="/teacher/manage-events">
             <>
               <Hidden xsDown>
                 <Grid item xs={1} sm={1} md={1} lg={1}>
@@ -381,7 +353,7 @@ class AdminDash extends React.Component<AcceptedProps, myState> {
           <Route exact path="/teacher">
             <Grid item xs={12} sm={8} md={9} lg={10} >
               <div className="clip" > <img className="clipPhoto" src={clipboard}></img>
-                <div className="classCodeImage"> <h2 className="signupTitle" >Class Code </h2>    <h2 className="classCodeId classCodeNumber" >{this.props.teacherAccount.classId}</h2> </div>
+                <div className="classCodeImage"> <h2 className="signupTitle" >Class Code </h2>    <h2 className="classCodeId classCodeNumber" >{this.props.teacherAccount?.classId}</h2> </div>
               </div>
             </Grid>
             </Route>
