@@ -10,6 +10,7 @@ interface BaseUser {
   lastName: string;
   password: string;
   updatedAt: string;
+  teacher: boolean;
 }
 
 export interface TeacherUser extends BaseUser { }

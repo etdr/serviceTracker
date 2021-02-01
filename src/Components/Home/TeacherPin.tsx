@@ -8,8 +8,8 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Falcon from "../../Assets/White Falcon.png";
 import Grid from "@material-ui/core/Grid";
 import {
-  Link
- 
+  Link,
+  RouteComponentProps
  } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 
@@ -23,18 +23,19 @@ function Copyright() {
   );
 }
 
-
-type myProps={
-  sessionToken:any,
-  teacherAccount: any
+// FIX THIS -- BAD SOLUTION (Eli's fault)
+interface TeacherPinProps extends Partial<RouteComponentProps<{ pin: string }>> {
+  // sessionToken: string;
+  // teacherAccount: any;
 }
 
 
 
-class TeacherPin extends React.Component<myProps,{}> {
+class TeacherPin extends React.Component<TeacherPinProps,{}> {
 
   componentDidMount(){
-    console.log(this.props.teacherAccount.teacherUser?.classId)
+    // see FIX THIS above
+    console.log(this.props.match!.params.pin)
   }
   render() {
     
@@ -57,7 +58,8 @@ class TeacherPin extends React.Component<myProps,{}> {
       <div className="formPadding">
         <Typography className="signupTitle" component="h1" variant="h6">
           CLASS CODE:
-          {this.props.teacherAccount.teacherUser?.classId}
+          {/* see FIX THIS above */}
+          {this.props.match!.params.pin}
         </Typography>
         <h5 className="signupTitle"> Students will use this code to join your group. </h5>
         <br></br>

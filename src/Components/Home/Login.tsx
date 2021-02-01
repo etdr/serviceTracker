@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, FormEvent } from "react";
 
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import API_URL from "../../environment";
 import Hidden from "@material-ui/core/Hidden";
 import World from "../../Assets/undraw_the_world_is_mine_nb0e (1).svg";
+import { TeacherAuthResponse, StudentAuthResponse, User } from "../types";
 
 //This component appears on the page as soon as a user arrives to the site
 
@@ -33,7 +34,7 @@ function Copyright() {
 type AcceptedProps = {
   sessionToken: string | null;
   updateToken: (newToken: string | null) => void;
-  
+  setUser: (user: User) => void;
   // setEmail: any;
   // setPassword: any;
   // classCode?: any;
@@ -52,22 +53,28 @@ interface LoginState {
   // firstName: string;
   // lastName: string;
   password: string;
+  
+  redirect: string | null;
 }
 
 class Login extends React.Component<AcceptedProps, LoginState> {
   constructor(props: AcceptedProps) {
     super(props);
     this.state = {
+      redirect: null,
+
       email: '',
       // firstName: '',
       // lastName: '',
       password: ''
     }
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleSubmitAsync = this.handleSubmitAsync.bind(this)
   }
 
   //Nested Fetches- This setup allows a student & a teacher to log in using the same form.
   //It takes the inputted information, determines if student or teacher, and then shows proper page
-  handleSubmit = (event: any) => {
+  handleSubmit (event: FormEvent) {
     event.preventDefault();
     fetch(`${API_URL}/user/login`, {
       method: "POST",
@@ -92,7 +99,7 @@ class Login extends React.Component<AcceptedProps, LoginState> {
         }
         return response.json();
       })
-      .then((json) => {
+      .then((json: StudentAuthResponse) => {
         // this.props.setIsAdminFalse(false);
         this.props.updateToken(json.sessionToken);
         if (this.props.sessionToken) {
@@ -127,10 +134,72 @@ class Login extends React.Component<AcceptedProps, LoginState> {
               //   this.props.setTeacherProfile([]);
               // }
               this.props.updateToken(json.sessionToken);
+              this.props.setUser(json.teacherUser)
+              this.setState({ redirect: '/teacher/dashboard' })
             });
         }
       });
   };
+
+  async handleSubmitAsync (event: FormEvent) {
+    event.preventDefault()
+
+    try {
+      const studentResponse = await fetch(`${API_URL}/user/login`, {
+        method: "POST",
+        body: JSON.stringify({
+          studentUser: {
+            email: this.state.email,
+            password: this.state.password
+          }
+        }),
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+      })
+
+      switch (studentResponse.status) {
+        case 200:
+          const studentJson: StudentAuthResponse = await studentResponse.json()
+          this.props.updateToken(studentJson.sessionToken)
+          this.props.setUser(studentJson.user)
+          this.setState({ redirect: '/student/dashboard' })
+          break
+
+        case 502:
+        case 500:
+        default:
+          const teacherResponse = await fetch(`${API_URL}/teacheruser/login`, {
+            method: "POST",
+            body: JSON.stringify({
+              teacherUser: {
+                email: this.state.email,
+                password: this.state.password,
+              },
+            }),
+            headers: new Headers({
+              "Content-Type": "application/json",
+            }),
+          })
+
+          switch (teacherResponse.status) {
+            case 200:
+              const teacherJson: TeacherAuthResponse = await teacherResponse.json()
+              this.props.updateToken(teacherJson.sessionToken)
+              this.props.setUser(teacherJson.user)
+              this.setState({ redirect: '/teacher/dashboard' })
+              break
+            
+            case 502:
+            case 500:
+            default:
+              throw new Error('flagrant login failure')
+          }
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   //This function searches to see if the user has a session token.
   //It then checks the status of isAdmin and pushes user to the appropriate page
@@ -145,6 +214,9 @@ class Login extends React.Component<AcceptedProps, LoginState> {
   // };
 
   render() {
+    if (this.state.redirect)
+      return <Redirect to={this.state.redirect} />
+
     return (
       <Grid container component="main" style={{ height: "100vh" }}>
         <CssBaseline />
@@ -202,7 +274,7 @@ class Login extends React.Component<AcceptedProps, LoginState> {
 
             <br></br>
 
-            <form onSubmit={this.handleSubmit} noValidate>
+            <form onSubmit={this.handleSubmitAsync} noValidate>
               <Grid container spacing={2}>
                 {/* <Grid item xs={6} sm={6}></Grid>
                 <Grid item xs={6} sm={6}></Grid> */}
