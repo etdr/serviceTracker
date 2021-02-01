@@ -9,7 +9,8 @@ import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import Button from "@material-ui/core/Button";
 
 import API_URL from '../../../environment'
-import { Service } from './types'
+import { Service } from '../../types'
+import { triggerAsyncId } from 'async_hooks';
 
 
 type Statuses = 'Approved' | 'Denied' | 'Pending'
@@ -58,20 +59,39 @@ export default class ServiceEntry extends React.Component<ServiceEntryProps, Ser
   };
 
   getStyle () {
-    return {
-      Approved: {
-        icon: faCheckSquare,
-        color: '#06d6a0'
-      },
-      Denied: {
-        icon: faTimesCircle,
-        color: '#ef476f'
-      },
-      Pending: {
-        icon: faQuestionCircle,
-        color: '#ffd166'
-      }
-    }[this.state.status as Statuses]
+    // return {
+    //   Approved: {
+    //     icon: faCheckSquare,
+    //     color: '#06d6a0'
+    //   },
+    //   Denied: {
+    //     icon: faTimesCircle,
+    //     color: '#ef476f'
+    //   },
+    //   Pending: {
+    //     icon: faQuestionCircle,
+    //     color: '#ffd166'
+    //   }
+    // }[this.state.status as Statuses]
+
+    switch (this.state.status) {
+      case 'Approved':
+        return {
+          icon: faCheckSquare,
+          color: '#06d6a0'
+        }
+      case 'Denied':
+        return {
+          icon: faTimesCircle,
+          color: '#ef476f'
+        }
+      case 'Pending':
+      default:
+        return {
+          icon: faQuestionCircle,
+          color: '#ffd166'
+        }
+    }
   }
 
   render() {

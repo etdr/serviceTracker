@@ -1,4 +1,8 @@
 
+export type ServiceStatus = 'Approved' | 'Denied' | 'Pending'
+
+export type ServiceType = "Tutoring" | "Recycling" | "NJHS Sponsored Event" | "Volunteering" | "Other"
+
 export interface Service {
   classId: number;
   createdAt: string;
@@ -6,9 +10,9 @@ export interface Service {
   description: string;
   hours: number;
   id: number;
-  status: string;
+  status: ServiceStatus;
   studentUserId: number;
-  typeOfService: string;
+  typeOfService: ServiceType;
   updatedAt: string;
 }
 
@@ -39,3 +43,5 @@ export interface StudentUser {
 }
 
 export type StudentUsers = StudentUser[]
+
+export type User = StudentUser | TeacherUser

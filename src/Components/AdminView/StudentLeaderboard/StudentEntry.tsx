@@ -9,7 +9,7 @@ import { faListAlt } from "@fortawesome/free-solid-svg-icons";
 
 import StudentProfile from './StudentProfile'
 
-import { StudentUser, Service } from './types'
+import { StudentUser, Service } from '../../types'
 
 interface StudentEntryProps {
   index: number;

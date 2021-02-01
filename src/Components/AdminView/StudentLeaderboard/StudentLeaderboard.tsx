@@ -14,7 +14,7 @@ import Typography from "@material-ui/core/Typography";
 import StudentEntry from "./StudentEntry";
 import API_URL from "../../../environment";
 
-import { StudentUser, StudentUsers, Service } from './types'
+import { StudentUser, StudentUsers, Service } from '../../types'
 
 
 type SLBProps = {
@@ -106,7 +106,10 @@ class StudentLeaderboard extends Component<SLBProps, SLBState> {
               {
                 this.state.users.length > 0
                   ? this.state.users.map((user: StudentUser, index: number) =>
-                    <StudentEntry user={user} index={index} sessionToken={this.props.sessionToken}
+                    <StudentEntry
+                      user={user}
+                      index={index}
+                      sessionToken={this.props.sessionToken}
                       fetchUsers={this.fetchUsers} />)
                   : null
               }

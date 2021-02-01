@@ -12,125 +12,65 @@ import API_URL from "../../../environment";
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Hidden from "@material-ui/core/Hidden";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckSquare } from "@fortawesome/free-solid-svg-icons";
-import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
-import { faUndo } from "@fortawesome/free-solid-svg-icons";
 
-let percentage = 56;
+import * as T from '../../types'
 
 type AcceptedProps = {
-  indexNumber: any;
-  firstName: string;
-  lastName: string;
-  sessionToken: any;
+  user: T.StudentUser;
+  sessionToken: string;
+
+  // indexNumber: any;
+  // firstName: string;
+  // lastName: string;
+  
   key: any;
   backArrowToggle: any;
   arrowHandler?: any;
   setBackArrowToggle: (e: any) => void;
   clearToken: any;
-  isAdmin: any;
-  setIsAdminFalse: any;
-  serviceRequests: any;
-  setServiceRequests: (e: any) => void;
-  setIndexNumber: (e: any) => void;
-  setSpecificEntry: (e: any) => void;
-  specificEntry: any;
+  
+  // setIsAdminFalse: any;
+  // serviceRequests: any;
+  // setServiceRequests: (e: any) => void;
+  // setIndexNumber: (e: any) => void;
+  // setSpecificEntry: (e: any) => void;
+  // specificEntry: any;
 };
 
-let arr: any = [0];
-let arr2: any = [0];
-let arr3: any = [0];
-let sum: number = 0;
-let sum2: number = 0;
-let sum3: number = 0;
-const add = (a: number, b: number) => a + b;
+interface MyDashState {
+  serviceRequests: T.Services;
+}
 
-class MyDashboard extends React.Component<AcceptedProps, {}> {
-  constructor(props: AcceptedProps) {
-    super(props);
+class MyDashboard extends React.Component<AcceptedProps, MyDashState> {
+
+  constructor (props: AcceptedProps) {
+    super(props)
+    this.state = {
+      serviceRequests: []
+    }
   }
 
-  checkForToken = () => {
-    console.log(this.props.isAdmin);
 
-    if (!this.props.sessionToken) {
-      return <Redirect to="/" />;
-    } else if (this.props.isAdmin === false) {
-      return <Redirect to="/myDashboard" />;
-    } else {
-      return <Redirect to="/admindash" />;
-    }
-  };
+  componentDidMount() {
+    this.props.setBackArrowToggle(false);
+    // this.props.setIsAdminFalse(false);
+    this.fetchServiceRequests();
+    // this.checkForToken();
+  }
 
-  percentageUnderReview = () => {
-    {
-      this.arr3Length();
-    }
-    {
-      this.props.serviceRequests.length > 0
-        ? this.props.serviceRequests?.map((service: any, index: any) =>
-            arr3.push(
-              this.props.serviceRequests[index].status === "Pending"
-                ? this.props.serviceRequests[index].hours
-                : 0
-            )
-          )
-        : console.log("did not work");
-    }
-    {
-      this.props.serviceRequests.length > 0
-        ? (sum3 = arr3.reduce(add))
-        : (sum3 = 0);
-    }
-  };
 
-  percentageDenied = () => {
-    {
-      this.arr2Length();
-    }
-    {
-      this.props.serviceRequests.length > 0
-        ? this.props.serviceRequests?.map((service: any, index: any) =>
-            arr2.push(
-              this.props.serviceRequests[index].status === "Denied"
-                ? this.props.serviceRequests[index].hours
-                : 0
-            )
-          )
-        : console.log("did not work");
-    }
-    {
-      this.props.serviceRequests.length > 0
-        ? (sum2 = arr2.reduce(add))
-        : (sum2 = 0);
-    }
-  };
+  // checkForToken () {
+  //   if (!this.props.sessionToken) {
+  //     return <Redirect to="/" />;
+  //   } else if (!this.props.isAdmin) {
+  //     return <Redirect to="/myDashboard" />;
+  //   } else {
+  //     return <Redirect to="/admindash" />;
+  //   }
+  // };
 
-  percentage = () => {
-    {
-      this.arrLength();
-    }
-    {
-      this.props.serviceRequests.length > 0
-        ? this.props.serviceRequests?.map((service: any, index: any) =>
-            arr.push(
-              this.props.serviceRequests[index].status === "Approved"
-                ? this.props.serviceRequests[index].hours
-                : 0
-            )
-          )
-        : console.log("did not work");
-    }
-    {
-      this.props.serviceRequests.length > 0
-        ? (sum = arr.reduce(add))
-        : (sum = 0);
-    }
-  };
 
-  fetchServiceRequests = () => {
+  fetchServiceRequests () {
     fetch(`${API_URL}/service`, {
       method: "GET",
       headers: new Headers({
@@ -140,38 +80,29 @@ class MyDashboard extends React.Component<AcceptedProps, {}> {
     })
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
-        this.props.setServiceRequests(json); //taking information from the server and setting it to our state
-        console.log(this.props.serviceRequests);
+
+        console.log(json)
+        this.setState({ serviceRequests: json }); //taking information from the server and setting it to our state
+
       });
   };
 
-  componentDidMount() {
-    console.log(this.props.firstName);
-    this.props.setBackArrowToggle(false);
-    this.props.setIsAdminFalse(false);
-    this.arrLength();
-    this.fetchServiceRequests();
-    this.percentage();
-    this.checkForToken();
+
+  calcTotal (status?: T.ServiceStatus) {
+    if (!status)
+      return this.state.serviceRequests
+        .map(s => s.hours)
+        .reduce((a, h) => a + h, 0)
+    return this.state.serviceRequests
+      .map(s => s.status === status ? s.hours : 0)
+      .reduce((a, h) => a + h, 0)
   }
 
-  arrLength = () => {
-    arr.length = 0;
-  };
-
-  arr2Length = () => {
-    arr2.length = 0;
-  };
-
-  arr3Length = () => {
-    arr3.length = 0;
-  };
 
 
   render() {
     return (
-      <React.Fragment>
+      <>
         <Sitebar
           backArrowToggle={this.props.backArrowToggle}
           // arrowHandler={this.props.arrowHandler}
@@ -199,8 +130,8 @@ class MyDashboard extends React.Component<AcceptedProps, {}> {
                     path: { stroke: "#06d6a0" },
                     text: { fill: "black" },
                   }}
-                  value={(sum / 30) * 100}
-                  text={`${sum}/30` }
+                  value={(this.calcTotal('Approved') / 30) * 100}
+                  text={`${this.calcTotal('Approved')}/30` }
                 
                 />
                 <Grid container component="main">
@@ -214,12 +145,11 @@ class MyDashboard extends React.Component<AcceptedProps, {}> {
         <Typography color="textSecondary" variant="body2" component="p">
          Current Totals
           <br/><br/>
-         {sum}  Approved 
+            {this.calcTotal('Approved')}  Approved 
           <br/>
-         {sum2}  Denied 
+            {this.calcTotal('Denied')}  Denied 
           <br/>
-          
-          {sum3}  Pending 
+            {this.calcTotal('Pending')}  Pending 
           <br/>
          
         </Typography>
@@ -265,15 +195,8 @@ class MyDashboard extends React.Component<AcceptedProps, {}> {
             </Box>
           </Grid>
         </Grid>
-  
-        {this.checkForToken()}
-        {this.percentage()}
-        {this.arrLength()}
-        {this.percentageDenied()}
-        {this.percentageUnderReview()}
-        {this.arr2Length()}
-        {this.arr3Length()}
-      </React.Fragment>
+
+      </>
     );
   }
 }

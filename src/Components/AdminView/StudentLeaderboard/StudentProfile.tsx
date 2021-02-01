@@ -17,7 +17,7 @@ import Button from "@material-ui/core/Button";
 import API_URL from "../../../environment";
 import ServiceEntry from "./ServiceEntry";
 
-import { StudentUser, Service } from './types'
+import { StudentUser, Service } from '../../types'
 
 type StudentProfileProps = {
   sessionToken: string;
