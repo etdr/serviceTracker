@@ -48,26 +48,15 @@ class MyDashboard extends React.Component<AcceptedProps, MyDashState> {
     this.state = {
       serviceRequests: []
     }
+
+    this.fetchServiceRequests = this.fetchServiceRequests.bind(this)
   }
 
 
   componentDidMount() {
     this.props.setBackArrowToggle(false);
-    // this.props.setIsAdminFalse(false);
     this.fetchServiceRequests();
-    // this.checkForToken();
   }
-
-
-  // checkForToken () {
-  //   if (!this.props.sessionToken) {
-  //     return <Redirect to="/" />;
-  //   } else if (!this.props.isAdmin) {
-  //     return <Redirect to="/myDashboard" />;
-  //   } else {
-  //     return <Redirect to="/admindash" />;
-  //   }
-  // };
 
 
   fetchServiceRequests () {
@@ -175,21 +164,22 @@ class MyDashboard extends React.Component<AcceptedProps, MyDashState> {
               <Box className="studentChart">
                 <ViewEvents
                   setBackArrowToggle={this.props.setBackArrowToggle}
-                  setIsAdminFalse={this.props.setIsAdminFalse}
-                  isAdmin={this.props.isAdmin}
+                  // setIsAdminFalse={this.props.setIsAdminFalse}
+                  // isAdmin={this.props.isAdmin}
                   backArrowToggle={this.props.backArrowToggle}
                   // arrowHandler={this.arrowHandler}
                   clearToken={this.props.clearToken}
                   sessionToken={this.props.sessionToken}
                 />
                 <Chart
-                  serviceRequests={this.props.serviceRequests}
-                  setServiceRequests={this.props.setServiceRequests}
+                  serviceRequests={this.state.serviceRequests}
+                  fetchServiceRequests={this.fetchServiceRequests}
+                  // setServiceRequests={this.props.setServiceRequests}
                   sessionToken={this.props.sessionToken}
-                  setIndexNumber={this.props.setIndexNumber}
-                  indexNumber={this.props.indexNumber}
-                  specificEntry={this.props.specificEntry}
-                  setSpecificEntry={this.props.setSpecificEntry}
+                  // setIndexNumber={this.props.setIndexNumber}
+                  // indexNumber={this.props.indexNumber}
+                  // specificEntry={this.props.specificEntry}
+                  // setSpecificEntry={this.props.setSpecificEntry}
                 />
               </Box>
             </Box>

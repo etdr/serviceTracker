@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, FormEvent } from "react";
 
 import Sitebar from "../../Sitebar/Sitebar";
 import Button from "@material-ui/core/Button";
@@ -15,41 +15,41 @@ import API_URL from "../../../environment";
 
 import { Redirect } from "react-router-dom";
 
+import { Service, ServiceType } from '../../types'
+
 //This component enables students to ADD service entries for approval
 
 type AcceptedProps = {
   setBackArrowToggle: (e: any) => void;
-  setIsAdminFalse: any;
-  isAdmin: any;
-  sessionToken?: any;
+  // setIsAdminFalse: any;
+  // isAdmin: any;
+  sessionToken: string;
   backArrowToggle: any;
-  clearToken: any;
-  date: any;
-  typeOfService: any;
-  description: any;
-  hours: any;
-  status: any;
-  studentUserId: any;
-  setDate: (e: any) => void;
-  setTypeOfService: (e: any) => void;
-  setDescription: (e: any) => void;
-  setHours: (e: any) => void;
-  setStatus: (e: any) => void;
+  clearToken: () => void;
 };
 
 type myState = {
-  serviceUpdate: boolean;
-  setServiceUpdate: (e: any) => void;
+  // serviceUpdate: boolean;
+  // setServiceUpdate: (e: any) => void;
+  date: string;
+  typeOfService: ServiceType | '';
+  description: string;
+  hours: number;
+  // status: 
 };
 
 class AddServiceHours extends React.Component<AcceptedProps, myState> {
   constructor(props: AcceptedProps) {
     super(props);
     this.state = {
-      serviceUpdate: false,
-      setServiceUpdate: (e) => {
-        this.setState({ serviceUpdate: e });
-      },
+      // serviceUpdate: false,
+      // setServiceUpdate: (e) => {
+      //   this.setState({ serviceUpdate: e });
+      // },
+      date: '',
+      typeOfService: '',
+      description: '',
+      hours: 1
     };
   }
 
@@ -58,14 +58,14 @@ class AddServiceHours extends React.Component<AcceptedProps, myState> {
   //2. If page refreshes, the user will be brought back to this page
   componentDidMount() {
     this.props.setBackArrowToggle(true);
-    this.props.setIsAdminFalse(false);
-    if (!this.props.sessionToken) {
-      return <Redirect to="/" />;
-    } else if (this.props.isAdmin === false) {
-      return <Redirect to="/myDashboard" />;
-    } else {
-      return <Redirect to="/admindash" />;
-    }
+    // this.props.setIsAdminFalse(false);
+    // if (!this.props.sessionToken) {
+    //   return <Redirect to="/" />;
+    // } else if (this.props.isAdmin === false) {
+    //   return <Redirect to="/myDashboard" />;
+    // } else {
+    //   return <Redirect to="/admindash" />;
+    // }
   }
 
   //This submit enables a user to post a new service entry
@@ -73,17 +73,18 @@ class AddServiceHours extends React.Component<AcceptedProps, myState> {
   //1. Entry posts to database
   //2. serviceUpdate value is set to true- thus redirecting to /mydashboard
   //3. setting prop values back to zero
-  handleSubmit = (event: any) => {
+  handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     fetch(`${API_URL}/service`, {
       method: "POST",
       body: JSON.stringify({
         service: {
-          date: this.props.date,
-          typeOfService: this.props.typeOfService,
-          description: this.props.description,
-          hours: this.props.hours,
-          status: this.props.status,
+          date: this.state.date,
+          typeOfService: this.state.typeOfService,
+          description: this.state.description,
+          hours: this.state.hours,
+          // status: this.props.status,
+          status: 'Pending'
         },
       }),
       headers: new Headers({
@@ -92,13 +93,13 @@ class AddServiceHours extends React.Component<AcceptedProps, myState> {
       }),
     }).then((response) => {
       if (response.status === 200) {
-        console.log("Service submission was successful");
-        this.state.setServiceUpdate(true);
+        // console.log("Service submission was successful");
+        // this.state.setServiceUpdate(true);
         //set each prop to empty
-        this.props.setDate("");
-        this.props.setHours(0);
-        this.props.setTypeOfService("");
-        this.props.setDescription("");
+        // this.props.setDate("");
+        // this.props.setHours(0);
+        // this.props.setTypeOfService("");
+        // this.props.setDescription("");
       } else {
         console.log("Service submission failed");
       }
@@ -108,11 +109,11 @@ class AddServiceHours extends React.Component<AcceptedProps, myState> {
 
   //When an entry is successful posted, the user
   //is brought back to student dashboard
-  checkForServiceEntry = () => {
-    if (this.state.serviceUpdate) {
-      return <Redirect to="/mydashboard" />;
-    }
-  };
+  // checkForServiceEntry = () => {
+  //   if (this.state.serviceUpdate) {
+  //     return <Redirect to="/mydashboard" />;
+  //   }
+  // };
 
   render() {
     return (
@@ -151,10 +152,7 @@ class AddServiceHours extends React.Component<AcceptedProps, myState> {
                         shrink: true,
                       }}
                       onChange={(e) => {
-                        console.log(e.target.value);
-                        this.props.setDate(e.target.value);
-                        console.log(this.props.date);
-                        console.log(e.target.value);
+                        this.setState({ date: e.target.value });
                       }}
                       defaultValue={0}
                     />
@@ -170,12 +168,9 @@ class AddServiceHours extends React.Component<AcceptedProps, myState> {
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
                       onChange={(e) => {
-                        console.log(e.target.value);
-                        this.props.setTypeOfService(e.target.value);
-                        console.log(this.props.typeOfService);
-                        console.log(e.target.value);
+                        this.setState({ typeOfService: e.target.value as ServiceType | '' });
                       }}
-                      defaultValue={" "}
+                      defaultValue={""}
                     >
                       <MenuItem value={"Tutoring"}>Tutoring</MenuItem>
                       <MenuItem value={"Recycling"}>Recycling</MenuItem>
@@ -196,8 +191,7 @@ class AddServiceHours extends React.Component<AcceptedProps, myState> {
                     label="Description of Service"
                     id="text"
                     onChange={(e) => {
-                      this.props.setDescription(e.target.value);
-                      console.log(this.props.description);
+                      this.setState({ description: e.target.value });
                     }}
                     defaultValue={" "}
                   />
@@ -211,15 +205,12 @@ class AddServiceHours extends React.Component<AcceptedProps, myState> {
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
                       onChange={(e) => {
-                        console.log(e.target.value);
-                        this.props.setHours(e.target.value);
-                        console.log(this.props.hours);
-                        console.log(e.target.value);
+                        this.setState({ hours: e.target.value as number });
                       }}
                       defaultValue={0}
                     >
-                      <MenuItem value={1}>1 hour </MenuItem>
-                      <MenuItem value={2}>2 hours </MenuItem>
+                      <MenuItem value={1}>1 hour</MenuItem>
+                      <MenuItem value={2}>2 hours</MenuItem>
                       <MenuItem value={3}>3 hours</MenuItem>
                     </Select>
                   </FormControl>{" "}
@@ -239,10 +230,10 @@ class AddServiceHours extends React.Component<AcceptedProps, myState> {
             </form>
           </div>
         </Container>
-        {console.log(this.props.typeOfService)}
+        {/* {console.log(this.props.typeOfService)}
         {console.log(this.props.hours)}
-        {console.log(this.props.description)}
-        {this.checkForServiceEntry()}
+        {console.log(this.props.description)} */}
+        {/* {this.checkForServiceEntry()} */}
       </div>
     );
   }

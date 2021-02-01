@@ -45,3 +45,33 @@ export interface StudentUser {
 export type StudentUsers = StudentUser[]
 
 export type User = StudentUser | TeacherUser
+
+export type Event = {
+  id: number;
+  date: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  location: string;
+  hours: number;
+  description: string;
+}
+
+export type Events = Event[]
+
+
+
+// ===== SERVER RESPONSES ======================================================
+
+interface AuthResponse {
+  message: string;
+  sessionToken: string;
+}
+
+export interface StudentAuthResponse extends AuthResponse {
+  user: StudentUser;
+}
+
+export interface TeacherAuthResponse extends AuthResponse {
+  user: TeacherUser;
+}

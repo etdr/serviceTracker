@@ -22,31 +22,33 @@ import clipboard from "../../Assets/undraw_No_data_re_kwbl.svg"
 import API_URL from "../../environment";
 import StudentLeaderboard from "./StudentLeaderboard/StudentLeaderboard"
 
+import { TeacherUser } from '../types'
+
 
 const percentage = 66;
 
 type AcceptedProps = {
-  sessionToken?: any;
+  sessionToken: string;
   backArrowToggle: any;
   // arrowHandler: any;
-  clearToken: any;
-  teacherAccount: any;
-  isAdmin: any;
+  clearToken: () => void;
+  teacherAccount: TeacherUser;
+  
   setBackArrowToggle: any;
-  setIsAdminTrue: (e: any) => void;
+  
 };
 
 type myState = {
-  classId: any;
-  setClassId: (e: any) => void;
-  viewStudentAccount: boolean;
-  viewEventSchedule: boolean;
-  viewManageHours: boolean;
-  viewSearch: boolean;
-  setViewManageHours: (e: any) => void;
-  setViewSearch: (e: any) => void;
-  setViewEventSchedule: (e: any) => void;
-  setViewStudentAccount: (e: any) => void;
+  // classId: any;
+  // setClassId: (e: any) => void;
+  // viewStudentAccount: boolean;
+  // viewEventSchedule: boolean;
+  // viewManageHours: boolean;
+  // viewSearch: boolean;
+  // setViewManageHours: (e: any) => void;
+  // setViewSearch: (e: any) => void;
+  // setViewEventSchedule: (e: any) => void;
+  // setViewStudentAccount: (e: any) => void;
 };
 
 class AdminDash extends React.Component<AcceptedProps, myState> {

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import Sitebar from "../../Sitebar/Sitebar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -13,89 +13,96 @@ import Select from "@material-ui/core/Select";
 import { Redirect } from "react-router-dom";
 import API_URL from "../../../environment";
 
-type AcceptedProps = {
-  indexNumber:any;
-  setIsAdminFalse: any;
-  isAdmin:any;
-  sessionToken?: any;
+import { Service, ServiceType } from '../../types'
+
+interface AcceptedProps extends Service {
+  // indexNumber:any;
+  // setIsAdminFalse: any;
+  // isAdmin:any;
+  sessionToken: string;
   backArrowToggle: any;
   // arrowHandler: any;
-  clearToken: any;
-  date: any;
-  typeOfService: any;
-  description: any;
-  hours: any;
-  status: any;
-  studentUserId: any;
-  serviceRequests: any;
-  setDate: (e: any) => void;
-  setTypeOfService: (e: any) => void;
-  setDescription: (e: any) => void;
-  setHours: (e: any) => void;
-  setStatus: (e: any) => void;
-  setServiceRequests: (e: any) => void;
-  setSpecificEntry?:(e:any)=>void;
-  specificEntry?:any;
+  clearToken: () => void;
+  serviceRequest: Service;
   setBackArrowToggle:(e:any)=>void; 
 };
 
-type myState={
-  serviceUpdate:boolean;
-  setServiceUpdate:(e:any)=> void;
-  setEntryById:(e:any)=> void;
-  setDate:(e:any)=> void;
-  setTypeOfService:(e:any)=> void;
-  setDescription:(e:any)=> void;
-  setHours:(e:any)=> void;
-  entryById:any;
-  date: any;
-  typeOfService: any;
-  description: any;
-  hours: any;
+interface UpdateServiceHoursState {
+  // serviceUpdate: boolean;
+  // setServiceUpdate: (e:any)=> void;
+  // setEntryById: (e:any)=> void;
+  // setDate: (e:any) => void;
+  // setTypeOfService:(e:any)=> void;
+  // setDescription:(e:any)=> void;
+  // setHours:(e:any)=> void;
+  // entryById:any;
+  date: string;
+  typeOfService: ServiceType | '';
+  description: string;
+  hours: number;
 }
 
 
 
-class UpdateServiceHours extends React.Component <AcceptedProps, myState>{
+class UpdateServiceHours extends Component<AcceptedProps, UpdateServiceHoursState> {
   constructor(props: AcceptedProps) {
     super(props);
     this.state = {
-      serviceUpdate:false,
-      setServiceUpdate: (e) => {this.setState({serviceUpdate: e})},
-      entryById: [],
-      setEntryById: (e) => {this.setState({entryById: e})},
-      date: "",
-      setDate: (e) => {this.setState({date: e})},
-      typeOfService: "",
-      setTypeOfService: (e) => {this.setState({typeOfService: e})},
-      description: "",
-      setDescription: (e) => {this.setState({description: e})},
-      hours: 0,
-      setHours: (e) => {this.setState({hours: e})},
+      // serviceUpdate:false,
+      // setServiceUpdate: (e) => {this.setState({serviceUpdate: e})},
+      // entryById: [],
+      // setEntryById: (e) => {this.setState({entryById: e})},
+      date: this.props.date,
+      // setDate: (e) => {this.setState({date: e})},
+      typeOfService: this.props.typeOfService,
+      // setTypeOfService: (e) => {this.setState({typeOfService: e})},
+      description: this.props.description,
+      // setDescription: (e) => {this.setState({description: e})},
+      hours: this.props.hours,
+      // setHours: (e) => {this.setState({hours: e})},
     };
  
   }
   fetchServiceRequests = () =>{
-    fetch(`${API_URL}/service/${this.props.indexNumber}`, {
+    fetch(`${API_URL}/service/${this.props.id}`, {
         method: 'GET',
         headers: new Headers ({
             'Content-Type': 'application/json',
             'Authorization': this.props.sessionToken
         })
     }).then((res=> res.json()))
-    .then((json) => {
-      this.state.setEntryById(json);
-      this.state.setHours(json.hours);
-      this.state.setTypeOfService(json.typeOfService);
-      this.state.setDescription(json.description);
-      this.state.setDate(json.date)
-      console.log(this.state.entryById)
+      .then((json) => {
+      
+        console.log(json)
+
+        // this.state.setEntryById(json);
+        // this.state.setHours(json.hours);
+        // this.state.setTypeOfService(json.typeOfService);
+        // this.state.setDescription(json.description);
+        // this.state.setDate(json.date)
+        // console.log(this.state.entryById)
         // console.log(json)
         // this.props.setServiceRequests(json) //taking information from the server and setting it to our state
         // console.log(this.props.indexNumber)
         
     })
-}
+  }
+
+
+  componentDidMount(){
+    this.props.setBackArrowToggle(true) 
+    // this.props.setIsAdminFalse(false);
+    this.fetchServiceRequests()
+    console.log(this.props.serviceRequests)
+    // console.log(this.props.indexNumber)
+    // if (!this.props.sessionToken) {
+    //   return <Redirect to="/" />;
+    // } else if (this.props.isAdmin === false) {
+    //   return <Redirect to="/myDashboard" />;
+    // } else {
+    //   return <Redirect to="/admindash" />;
+    // }
+  }
 
 //When the page loads run another fetch GET request BY ID (indexNumber) Get 1 by id in controller
 //local state variables this.state.hours
@@ -171,26 +178,14 @@ class UpdateServiceHours extends React.Component <AcceptedProps, myState>{
  
   };
 
-  checkForProfile=() => {
-    if (this.state.serviceUpdate){
-      return <Redirect to="/mydashboard"/>
-    }
-  }
+  // checkForProfile=() => {
+  //   if (this.state.serviceUpdate){
+  //     return <Redirect to="/mydashboard"/>
+  //   }
+  // }
 
-  componentDidMount(){
-    this.props.setBackArrowToggle(true) 
-    this.props.setIsAdminFalse(false);
-    this.fetchServiceRequests()
-    console.log(this.props.serviceRequests)
-    console.log(this.props.indexNumber)
-    if (!this.props.sessionToken) {
-      return <Redirect to="/" />;
-    } else if (this.props.isAdmin === false) {
-      return <Redirect to="/myDashboard" />;
-    } else {
-      return <Redirect to="/admindash" />;
-    }
-  }
+
+
   render() {
     return (
       <div>
@@ -226,12 +221,9 @@ class UpdateServiceHours extends React.Component <AcceptedProps, myState>{
                         shrink: true,
                       }}
                       onChange={(e) => {
-                        console.log(e.target.value);
-                        this.state.setDate(e.target.value);
-                        console.log(this.state.date);
-                        console.log(e.target.value);
+                        this.setState({ date: e.target.value });
                       }}
-                      defaultValue={this.props.specificEntry.date}
+                      defaultValue={this.state.date}
                     />
                   </form>
                 </Grid>
@@ -245,14 +237,11 @@ class UpdateServiceHours extends React.Component <AcceptedProps, myState>{
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
                       onChange={(e) => {
-                        console.log(e.target.value);
-                        this.state.setTypeOfService(e.target.value);
-                        console.log(this.state.entryById.typeOfService);
-                        console.log(e.target.value);
+                        this.setState({ typeOfService: e.target.value as ServiceType });
                       }}
-                      defaultValue={this.props.specificEntry.typeOfService}
+                      defaultValue={this.state.typeOfService}
                     >
-                       <MenuItem value={"Tutoring"}>Tutoring</MenuItem>
+                      <MenuItem value={"Tutoring"}>Tutoring</MenuItem>
                       <MenuItem value={"Recycling"}>Recycling</MenuItem>
                       <MenuItem value={"NJHS Sponsored Event"}>
                         NJHS Sponsored Event
@@ -273,13 +262,9 @@ class UpdateServiceHours extends React.Component <AcceptedProps, myState>{
                   label="Description of Service"
                   id="text"
                   onChange={(e) => {
-                    console.log(e.target.value)
-                    this.state.setDescription(e.target.value);
-                    console.log(this.props.description);
-                    console.log(this.props.specificEntry)
-                    console.log(this.props.indexNumber)
+                    this.setState({ description: e.target.value });
                   }}
-                  defaultValue={this.props.specificEntry.description}
+                  defaultValue={this.state.description}
                  
                   />
                 </Grid>
@@ -292,15 +277,12 @@ class UpdateServiceHours extends React.Component <AcceptedProps, myState>{
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
                       onChange={(e) => {
-                        console.log(e.target.value);
-                        this.state.setHours(e.target.value);
-                        console.log(this.props.hours);
-                        console.log(e.target.value);
+                        this.setState({ hours: e.target.value as number });
                       }}
-                      defaultValue={this.props.specificEntry.hours}
+                      defaultValue={this.state.hours}
                     >
-                      <MenuItem value={1}>1 hour </MenuItem>
-                      <MenuItem value={2}>2 hours </MenuItem>
+                      <MenuItem value={1}>1 hour</MenuItem>
+                      <MenuItem value={2}>2 hours</MenuItem>
                       <MenuItem value={3}>3 hours</MenuItem>
                     </Select>
                   </FormControl>{" "}
@@ -321,12 +303,12 @@ class UpdateServiceHours extends React.Component <AcceptedProps, myState>{
             </form>
           </div>
         </Container>
-        {console.log(this.props.serviceRequests)}
+        {/* {console.log(this.props.serviceRequests)}
         {console.log(this.props.typeOfService)}
         {console.log(this.props.specificEntry)}
         
        
-        {this.checkForProfile()}
+        {this.checkForProfile()} */}
       </div>
     );
     

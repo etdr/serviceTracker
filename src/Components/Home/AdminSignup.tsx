@@ -10,6 +10,8 @@ import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 import API_URL from "../../environment";
 
+import { TeacherUser, TeacherAuthResponse } from '../types'
+
 //This component is where an ADMIN would create an account
 
 //This function displays copyright information.
@@ -24,23 +26,43 @@ function Copyright() {
 }
 
 type AcceptedProps = {
-  sessionToken: any;
-  updateToken: any;
-  email: any;
-  firstName: string;
-  lastName: string;
-  password: any;
-  setEmail: any;
-  setPassword: any;
-  classCode?: any;
-  setClassCode?: any;
-  setFirstName?: any;
-  setLastName?: any;
-  setTeacherProfile: (e: any) => void;
-  teacherAccount: any;
+  sessionToken: string | null;
+  updateToken: (newToken: string | null) => void;
+  setUser: (user: TeacherUser | null) => void;
+  // email: any;
+  // firstName: string;
+  // lastName: string;
+  // password: any;
+  // setEmail: any;
+  // setPassword: any;
+  // classCode?: any;
+  // setClassCode?: any;
+  // setFirstName?: any;
+  // setLastName?: any;
+  // setTeacherProfile: (e: any) => void;
+  // teacherAccount: any;
 };
 
-class AdminSignup extends React.Component<AcceptedProps, {}> {
+interface AdminSignupState {
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+}
+
+class AdminSignup extends React.Component<AcceptedProps, AdminSignupState> {
+  
+  constructor (props: AcceptedProps) {
+    super(props)
+    this.state = {
+      email: '',
+      firstName: '',
+      lastName: '',
+      password: ''
+    }
+  }
+  
+  
   //This fetch CREATES an Admin account.
   handleSubmit = (event: any) => {
     event.preventDefault();
@@ -48,10 +70,10 @@ class AdminSignup extends React.Component<AcceptedProps, {}> {
       method: "POST",
       body: JSON.stringify({
         teacherUser: {
-          firstName: this.props.firstName,
-          lastName: this.props.lastName,
-          email: this.props.email,
-          password: this.props.password,
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          email: this.state.email,
+          password: this.state.password,
         },
       }),
       headers: new Headers({
@@ -59,24 +81,24 @@ class AdminSignup extends React.Component<AcceptedProps, {}> {
       }),
     })
       .then((response) => response.json())
-      .then((json) => {
-        if (json !== undefined) {
-          this.props.setTeacherProfile(json); //taking information from the server and setting it to our state
-        } else {
-          this.props.setTeacherProfile([]);
-        }
+      .then((json: TeacherAuthResponse) => {
+        // if (json !== undefined) {
+        //   this.props.setTeacherProfile(json); //taking information from the server and setting it to our state
+        // } else {
+        //   this.props.setTeacherProfile([]);
+        // }
         this.props.updateToken(json.sessionToken);
-        console.log(this.props.teacherAccount.teacherUser?.classId);
+        this.props.setUser(json.user)
       });
   };
 
   //If an Admin account is properly created with a session token the user is redirected to the proper page
-  checkForToken = () => {
-    if (!this.props.sessionToken || this.props.firstName === undefined) {
-      return <Redirect to="/adminsignup" />;
-    }
-    return <Redirect to="/admindash" />;
-  };
+  // checkForToken = () => {
+  //   if (!this.props.sessionToken || this.state.firstName === undefined) {
+  //     return <Redirect to="/adminsignup" />;
+  //   }
+  //   return <Redirect to="/admindash" />;
+  // };
 
   render() {
     return (
@@ -99,21 +121,21 @@ class AdminSignup extends React.Component<AcceptedProps, {}> {
             <br></br>
             <form onSubmit={this.handleSubmit} noValidate>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6}>
                   <TextField
-                    autoComplete="fname"
+              
                     name="firstName"
                     variant="outlined"
                     required
                     fullWidth
                     id="firstName"
                     label="First Name"
+                    autoComplete="off"
                     autoFocus
                     onChange={(e) => {
-                      this.props.setFirstName(e.target.value);
-                      console.log(this.props.firstName);
+                      this.setState({ firstName: e.target.value });
                     }}
-                    defaultValue={this.props.firstName}
+                    defaultValue={this.state.firstName}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -124,12 +146,11 @@ class AdminSignup extends React.Component<AcceptedProps, {}> {
                     id="lastName"
                     label="Last Name"
                     name="lastName"
-                    autoComplete="lname"
+                    autoComplete="off"
                     onChange={(e) => {
-                      this.props.setLastName(e.target.value);
-                      console.log(this.props.lastName);
+                      this.setState({ lastName: e.target.value });
                     }}
-                    defaultValue={this.props.lastName}
+                    defaultValue={this.state.lastName}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -140,12 +161,11 @@ class AdminSignup extends React.Component<AcceptedProps, {}> {
                     id="email"
                     label="Email Address"
                     name="email"
-                    autoComplete="email"
+                    autoComplete="off"
                     onChange={(e) => {
-                      this.props.setEmail(e.target.value);
-                      console.log(this.props.email);
+                      this.setState({ email: e.target.value });
                     }}
-                    defaultValue={this.props.email}
+                    defaultValue={this.state.email}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -157,12 +177,11 @@ class AdminSignup extends React.Component<AcceptedProps, {}> {
                     label="Password"
                     type="password"
                     id="password"
-                    autoComplete="current-password"
+                    autoComplete="off"
                     onChange={(e) => {
-                      this.props.setPassword(e.target.value);
-                      console.log(this.props.password);
+                      this.setState({ password: e.target.value });
                     }}
-                    defaultValue={this.props.password}
+                    defaultValue={this.state.password}
                   />
                 </Grid>
                 <Grid item xs={12}></Grid>
@@ -204,7 +223,7 @@ class AdminSignup extends React.Component<AcceptedProps, {}> {
         >
           <Copyright />
         </div> */}
-        {this.checkForToken()}
+        {/* {this.checkForToken()} */}
       </Grid>
     );
   }

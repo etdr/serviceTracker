@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component, FormEvent } from "react";
 
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -19,50 +19,51 @@ import API_URL from "../../../environment";
 
 
 type AcceptedProps = {
-  sessionToken?: any;
-  eventInfo: any;
-  setOpen: (e: any) => void;
-fetchEvents:any;
-  open: any;
+  sessionToken: string;
+  // eventInfo: any;
+  // setOpen: (e: any) => void;
+  fetchEvents: any;
+  open: boolean;
+  toggleOpen: () => void;
 };
 
 
 
 type myState = {
-  date: any;
+  date: string;
   title: string;
   description: string;
   hours: number;
   location: string;
-  eventUpdate:boolean;
-  setEventUpdate:(e:any)=> void;
-  setDate: (e: any) => void;
-  setTitle: (e: any) => void;
-  setDescription: (e: any) => void;
-  setHours: (e: any) => void;
-  setLocation: (e: any) => void;
+  // eventUpdate:boolean;
+  // setEventUpdate:(e:any)=> void;
+  // setDate: (e: any) => void;
+  // setTitle: (e: any) => void;
+  // setDescription: (e: any) => void;
+  // setHours: (e: any) => void;
+  // setLocation: (e: any) => void;
 };
 
-class AddEvent extends React.Component<AcceptedProps, myState> {
+class AddEvent extends Component<AcceptedProps, myState> {
   constructor(props: AcceptedProps) {
     super(props);
     this.state = {
       date: "",
       location: "",
       description: "",
-      hours: 900,
+      hours: 1,
       title: " ",
-      eventUpdate:false,
-      setEventUpdate: (e) => {this.setState({eventUpdate: e})},
-      setDate: (e) => {this.setState({date: e})},
-      setLocation: (e) => {this.setState({location: e})},
-      setHours: (e) => {this.setState({hours: e})},
-      setDescription: (e) => {this.setState({description: e})},
-      setTitle: (e) => {this.setState({title: e})}
+      // eventUpdate:false,
+      // setEventUpdate: (e) => {this.setState({eventUpdate: e})},
+      // setDate: (e) => {this.setState({date: e})},
+      // setLocation: (e) => {this.setState({location: e})},
+      // setHours: (e) => {this.setState({hours: e})},
+      // setDescription: (e) => {this.setState({description: e})},
+      // setTitle: (e) => {this.setState({title: e})},
     };
   }
 
-  handleSubmit = (event: any) => {
+  handleSubmit (event: any) {
    
     event.preventDefault();
     fetch(`${API_URL}/events/`, {
@@ -82,15 +83,15 @@ class AddEvent extends React.Component<AcceptedProps, myState> {
       }),
     }).then((response) => {
       if (response.status === 200) {
-        console.log("Event submission was successful");
-        this.state.setEventUpdate(true);
+        // console.log("Event submission was successful");
+        // this.state.setEventUpdate(true);
         // set each prop to empty
-        this.state.setDate("");
-        this.state.setHours(0);
-        this.state.setTitle("");
-        this.state.setDescription("");
-        this.state.setLocation("");
-        this.props.setOpen(false);
+        // this.state.setDate("");
+        // this.state.setHours(0);
+        // this.state.setTitle("");
+        // this.state.setDescription("");
+        // this.state.setLocation("");
+        // this.props.setOpen(false);
         this.props.fetchEvents();
       } else {
         console.log("Event submission failed");
@@ -99,15 +100,15 @@ class AddEvent extends React.Component<AcceptedProps, myState> {
     });
   };
 
-  checkForEventEntry=() => {
-    if (this.state.eventUpdate){
-      return <Redirect to="/adminDash"/>
-    }
-  }
+  // checkForEventEntry () {
+  //   if (this.state.eventUpdate){
+  //     return <Redirect to="/adminDash"/>
+  //   }
+  // }
 
-  handleClickClose = () => {
-    this.props.setOpen(false);
-  };
+  // handleClickClose () {
+  //   this.props.toggleOpen();
+  // };
 
   render() {
     return (
@@ -137,10 +138,9 @@ class AddEvent extends React.Component<AcceptedProps, myState> {
                       shrink: true,
                     }}
                     onChange={(e) => {
-                      this.state.setDate(e.target.value);
-                      console.log(this.state.date)
+                      this.setState({ date: e.target.value });
                     }}
-                    defaultValue={0}
+                    defaultValue={this.state.date}
                   />
                 </form>
               </Grid>
@@ -156,11 +156,9 @@ class AddEvent extends React.Component<AcceptedProps, myState> {
                     type="text"
                     fullWidth
                     onChange={(e) => {
-                    
-                      this.state.setTitle(e.target.value);
-                     
+                      this.setState({ title: e.target.value });
                     }}
-                    defaultValue={" "}
+                    defaultValue={this.state.title}
                   />
                   <TextField
                       autoComplete="off"
@@ -171,11 +169,9 @@ class AddEvent extends React.Component<AcceptedProps, myState> {
                     type="text"
                     fullWidth
                     onChange={(e) => {
-                    
-                      this.state.setLocation(e.target.value);
-                     
+                      this.setState({ location: e.target.value });
                     }}
-                    defaultValue={" "}
+                    defaultValue={this.state.location}
                   />
                 </FormControl>{" "}
               </Grid>
@@ -189,11 +185,9 @@ class AddEvent extends React.Component<AcceptedProps, myState> {
                   label="Event Description"
                   type="text"
                   onChange={(e) => {
-              
-                    this.state.setDescription(e.target.value);
-                   
+                    this.setState({ description: e.target.value });
                   }}
-                  defaultValue={" "}
+                  defaultValue={this.state.description}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -210,13 +204,9 @@ class AddEvent extends React.Component<AcceptedProps, myState> {
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     onChange={(e) => {
-                 
-                      this.state.setHours(e.target.value);
-                   
+                      this.setState({ hours: e.target.value as number });
                     }}
-                    defaultValue={0}
-                    //   value={age}
-                    //   onChange={handleChange}
+                    defaultValue={1}
                   >
                     <MenuItem value={1}>1</MenuItem>
                     <MenuItem value={2}>2</MenuItem>
@@ -229,7 +219,7 @@ class AddEvent extends React.Component<AcceptedProps, myState> {
             <DialogActions>
               <Button
                 onClick={() => {
-                  this.handleClickClose();
+                  this.props.toggleOpen()
                 }}
               >
                 Cancel
@@ -246,7 +236,7 @@ class AddEvent extends React.Component<AcceptedProps, myState> {
             <Grid container justify="flex-end"></Grid>
      
         </DialogContent> </form>
-        {this.checkForEventEntry()}
+        {/* {this.checkForEventEntry()} */}
       </Dialog>
     );
   }

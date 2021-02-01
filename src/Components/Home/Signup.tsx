@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, FormEvent } from "react";
 
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -10,23 +10,32 @@ import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 import API_URL from "../../environment";
 
+import { StudentUser, StudentAuthResponse } from '../types'
+
 //This component is where a STUDENT would create an account
 
 type AcceptedProps = {
-  sessionToken: any;
-  updateToken: any;
-  email: any;
+  sessionToken: string | null;
+  updateToken: (newToken: string | null) => void;
+  setUser: (user: StudentUser | null) => void;
+  // setEmail: any;
+  // setPassword: any;
+  // classCode?: any;
+  // setClassCode?: any;
+  // setFirstName?: any;
+  // setLastName?: any;
+  // setIsAdminFalse: (e: any) => void;
+};
+
+interface SignupState {
+  email: string;
   firstName: string;
   lastName: string;
-  password: any;
-  setEmail: any;
-  setPassword: any;
-  classCode?: any;
-  setClassCode?: any;
-  setFirstName?: any;
-  setLastName?: any;
-  setIsAdminFalse: (e: any) => void;
-};
+  password: string;
+  classCode: string;
+}
+
+
 
 //This is the copyright function. It is not currently being shown on screen.
 
@@ -40,19 +49,33 @@ function Copyright() {
   );
 }
 
-class Signup extends React.Component<AcceptedProps, {}> {
+class Signup extends React.Component<AcceptedProps, SignupState> {
+
+  constructor (props: AcceptedProps) {
+    super(props)
+    this.state = {
+      email: '',
+      firstName: '',
+      lastName: '',
+      password: '',
+      classCode: ''
+    }
+  }
+
+
+
   //This fetch CREATES a student user. They are then linked to the correct group through the class code.
-  handleSubmit = (event: any) => {
+  handleSubmit (event: FormEvent) {
     event.preventDefault();
     fetch(`${API_URL}/user/signup`, {
       method: "POST",
       body: JSON.stringify({
         studentUser: {
-          firstName: this.props.firstName,
-          lastName: this.props.lastName,
-          email: this.props.email,
-          password: this.props.password,
-          classId: this.props.classCode,
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          email: this.state.email,
+          password: this.state.password,
+          classId: this.state.classCode
         },
       }),
       headers: new Headers({
@@ -60,20 +83,20 @@ class Signup extends React.Component<AcceptedProps, {}> {
       }),
     })
       .then((response) => response.json())
-      .then((json) => {
-        this.props.setIsAdminFalse(false);
+      .then((json: StudentAuthResponse) => {
         this.props.updateToken(json.sessionToken);
+        this.props.setUser(json.user)
       });
   };
 
   //This function checks to see if an account has been successfully created (ie student has session token)
   //It then pushes the user to the proper viewpoint
-  checkForToken = () => {
-    if (!this.props.sessionToken || this.props.firstName === undefined) {
-      return <Redirect to="/signup" />;
-    }
-    return <Redirect to="/myDashboard" />;
-  };
+  // checkForToken = () => {
+  //   if (!this.props.sessionToken || this.props.firstName === undefined) {
+  //     return <Redirect to="/signup" />;
+  //   }
+  //   return <Redirect to="/myDashboard" />;
+  // };
 
   render() {
     return (
@@ -108,10 +131,9 @@ class Signup extends React.Component<AcceptedProps, {}> {
                     autoComplete="off"
                     autoFocus
                     onChange={(e) => {
-                      this.props.setFirstName(e.target.value);
-                      console.log(this.props.firstName);
+                      this.setState({ firstName: e.target.value });
                     }}
-                    defaultValue={this.props.firstName}
+                    defaultValue={this.state.firstName}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -124,10 +146,9 @@ class Signup extends React.Component<AcceptedProps, {}> {
                     name="lastName"
                     autoComplete="off"
                     onChange={(e) => {
-                      this.props.setLastName(e.target.value);
-                      console.log(this.props.lastName);
+                      this.setState({ lastName: e.target.value });
                     }}
-                    defaultValue={this.props.lastName}
+                    defaultValue={this.state.lastName}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -140,10 +161,9 @@ class Signup extends React.Component<AcceptedProps, {}> {
                     name="email"
                     autoComplete="off"
                     onChange={(e) => {
-                      this.props.setEmail(e.target.value);
-                      console.log(this.props.email);
+                      this.setState({ email: e.target.value });
                     }}
-                    defaultValue={this.props.email}
+                    defaultValue={this.state.email}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -157,10 +177,9 @@ class Signup extends React.Component<AcceptedProps, {}> {
                     id="password"
                     autoComplete="off"
                     onChange={(e) => {
-                      this.props.setPassword(e.target.value);
-                      console.log(this.props.password);
+                      this.setState({ password: e.target.value });
                     }}
-                    defaultValue={this.props.password}
+                    defaultValue={this.state.password}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -174,10 +193,9 @@ class Signup extends React.Component<AcceptedProps, {}> {
                     id="password"
                     autoComplete="off"
                     onChange={(e) => {
-                      this.props.setClassCode(e.target.value);
-                      console.log(this.props.setClassCode);
+                      this.setState({ classCode: e.target.value });
                     }}
-                    defaultValue={this.props.classCode}
+                    defaultValue={this.state.classCode}
                   />
                 </Grid>
 
@@ -216,7 +234,7 @@ class Signup extends React.Component<AcceptedProps, {}> {
         >
           <Copyright />
         </div> */}
-        {this.checkForToken()}
+        {/* {this.checkForToken()} */}
       </Grid>
     );
   }

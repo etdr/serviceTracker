@@ -15,11 +15,15 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Box from "@material-ui/core/Box";
 import API_URL from "../../environment";
 
+import Event from './StudentDashboard/Event'
+import { Event as EventType, Events } from '../types'
+
+
 type AcceptedProps = {   
  
-  setIsAdminFalse: any;
-  isAdmin:any;
-  sessionToken?: any;
+  // setIsAdminFalse: any;
+  // isAdmin:any;
+  sessionToken: string;
   backArrowToggle: any;
   // arrowHandler: any;
   clearToken: any;
@@ -27,32 +31,32 @@ type AcceptedProps = {
 };
 
 type myState = {
-  eventInfo: any;
-  setEventInfo: (e: any) => void;
+  eventsInfo: Events;
+  // setEventInfo: (e: any) => void;
 };
 
 class ViewEvents extends React.Component  <AcceptedProps, myState> {
   constructor(props: AcceptedProps) {
     super(props);
     this.state = {
-      eventInfo: [],
-      setEventInfo: (entry) => {
-        this.setState({ eventInfo: entry });
-      },
+      eventsInfo: [],
+      // setEventInfo: (entry) => {
+      //   this.setState({ eventsInfo: entry });
+      // },
     };
   }
 
   componentDidMount(){
     this.props.setBackArrowToggle(true);
     this.fetchService();
-    this.props.setIsAdminFalse(false);
-    if (!this.props.sessionToken) {
-      return <Redirect to="/" />;
-    } else if (this.props.isAdmin === false) {
-      return <Redirect to="/myDashboard" />;
-    } else {
-      return <Redirect to="/admindash" />;
-    }
+    // this.props.setIsAdminFalse(false);
+    // if (!this.props.sessionToken) {
+    //   return <Redirect to="/" />;
+    // } else if (this.props.isAdmin === false) {
+    //   return <Redirect to="/myDashboard" />;
+    // } else {
+    //   return <Redirect to="/admindash" />;
+    // }
   }
 
   fetchService = () => {
@@ -66,8 +70,7 @@ class ViewEvents extends React.Component  <AcceptedProps, myState> {
       .then((res) => res.json())
       .then((json) => {
         console.log(json);
-        this.state.setEventInfo(json);
-        console.log(this.state.eventInfo);
+        this.setState({ eventsInfo: json });
       });
   };
 
@@ -112,64 +115,15 @@ class ViewEvents extends React.Component  <AcceptedProps, myState> {
                 </ButtonGroup> */}
               </Box>
             </Box>
-            {this.state.eventInfo.length > 0 ? (
-              this.state.eventInfo.map((event: any, index: any) => (
-                <Accordion style={{ margin: ".5px" }} key={this.state.eventInfo.id} square>
-                  <AccordionSummary
-                    aria-controls="panel1d-content"
-                    id="panel1d-header"
-                  >
-                  
-                    <Typography style={{ marginLeft: "15px" }}>
-                      {this.state.eventInfo[index].date} 
-          
-                    </Typography>
-                    <Typography style={{ marginLeft: "45px" }}>
-                     
-                      {this.state.eventInfo[index].title}
-                    </Typography>
-                    <div style={{ marginLeft: "auto" }}>
-                     
-                    </div>
-                  </AccordionSummary>
-              <AccordionDetails style={{ padding: "0px 30px"}}>
-                  
-                
-                  <Typography>
-                      <p style={{ fontSize: "12px", marginRight:"100px"   }}>Location: {this.state.eventInfo[index].location} </p>
-                      <p style={{ fontSize: "12px" }}>Hours: {this.state.eventInfo[index].hours} </p>
-                    </Typography>
-                    <Typography>
-                      
-                    </Typography>
-                </AccordionDetails>
-                <AccordionDetails>
-     
-    
-                  
-                  
-                </AccordionDetails>
-  
-                
-               
-     
-                  <AccordionDetails style={{ padding: "0px 30px"}}>
-                    <Typography>
-                      <p style={{ fontSize: "12px" }}>Event Description:</p>
-                    </Typography>
-                  </AccordionDetails>
-                  <AccordionDetails>
-                    <Typography>
-                      <p style={{  fontSize: "12px", padding:"0px 15px" }}> {this.state.eventInfo[index].description}</p>
-                    </Typography>
-                  </AccordionDetails>
-                </Accordion>
+            {this.state.eventsInfo.length > 0 ? (
+              this.state.eventsInfo.map((event: EventType, index: number) => (
+                // https://kevinyckim33.medium.com/jsx-spread-operator-component-props-meaning-3c9bcadd2493
+                <Event {...event} />
               ))
             ) : (
               <div style={{marginTop: "30px"}}> There are no upcoming events. </div>
             )}
           </div>
-          {console.log(this.state.eventInfo.title)}
         </div>
       );
     }

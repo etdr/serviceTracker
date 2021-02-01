@@ -15,41 +15,50 @@ import Select from "@material-ui/core/Select";
 import { Redirect } from "react-router-dom";
 import API_URL from "../../../environment";
 
+import { Event } from '../../types'
+
 //This component is the EDIT EVENTS modal where event info is updated
 
-type AcceptedProps = {
-  date: any;
-  setDate: (e: any) => void;
-  oneEvent: any;
-  sessionToken?: any;
-  eventInfo: any;
-  setOpen2: (e: any) => void;
-  fetchEvents: any;
-  open2: any;
-  eventInfoIndex: any;
-  title: any;
-  hours: any;
-  setHours: (e: any) => void;
-  location: any;
-  setLocation: (e: any) => void;
-  description: any;
-  setTitle: (e: any) => void;
-  setDescription: (e: any) => void;
+interface AcceptedProps extends Event {
+  // date: any;
+  // setDate: (e: any) => void;
+  // oneEvent: any;
+  sessionToken: string;
+  // eventInfo: any;
+  // setOpen2: (e: any) => void;
+  fetchEvents: () => void;
+  open: boolean;
+  toggle: () => void;
+  // eventInfoIndex: any;
+  // title: any;
+  // hours: any;
+  // setHours: (e: any) => void;
+  // location: any;
+  // setLocation: (e: any) => void;
+  // description: any;
+  // setTitle: (e: any) => void;
+  // setDescription: (e: any) => void;
 };
 
-type myState = {
-  eventUpdate: boolean;
-  setEventUpdate: (e: any) => void;
+interface UpdateEventState {
+  // eventUpdate: boolean;
+  // setEventUpdate: (e: any) => void;
+  date: string;
+  title: string;
+  description: string;
+  hours: number;
+  location: string;
 };
 
-class UpdateEvent extends React.Component<AcceptedProps, myState> {
+class UpdateEvent extends React.Component<AcceptedProps, UpdateEventState> {
   constructor(props: AcceptedProps) {
     super(props);
     this.state = {
-      eventUpdate: false,
-      setEventUpdate: (e) => {
-        this.setState({ eventUpdate: e });
-      },
+      date: this.props.date,
+      title: this.props.title,
+      description: this.props.description,
+      hours: this.props.hours,
+      location: this.props.location
     };
   }
 
@@ -63,7 +72,7 @@ class UpdateEvent extends React.Component<AcceptedProps, myState> {
   //this closing the modal, and fetchEvents() updates contents of table
   handleSubmit = (event: any) => {
     event.preventDefault();
-    fetch(`${API_URL}/events/${this.props.oneEvent.id}`, {
+    fetch(`${API_URL}/events/${this.props.id}`, {
       method: "PUT",
       body: JSON.stringify({
         events: {
@@ -81,10 +90,10 @@ class UpdateEvent extends React.Component<AcceptedProps, myState> {
     }).then((response) => {
       if (response.status === 200) {
         console.log("Event update submission was successful");
-        this.state.setEventUpdate(true);
+        // this.state.setEventUpdate(true);
 
         this.props.fetchEvents();
-        this.props.setOpen2(false);
+        this.props.toggle();
       } else {
         console.log("Event update submission failed");
       }
@@ -92,20 +101,20 @@ class UpdateEvent extends React.Component<AcceptedProps, myState> {
     });
   };
 
-  checkForEventEntry = () => {
-    if (this.state.eventUpdate) {
-      return <Redirect to="/adminDash" />;
-    }
-  };
+  // checkForEventEntry = () => {
+  //   if (this.state.eventUpdate) {
+  //     return <Redirect to="/adminDash" />;
+  //   }
+  // };
 
   //This function closes the EDIT EVENTS modal
-  handleClickClose = () => {
-    this.props.setOpen2(false);
-  };
+  // handleClickClose = () => {
+  //   this.props.setOpen2(false);
+  // };
 
   render() {
     return (
-      <Dialog open={this.props.open2}>
+      <Dialog open={this.props.open}>
         <DialogTitle id="form-dialog-title">
           <Typography
             className="adminTitle"
@@ -129,12 +138,12 @@ class UpdateEvent extends React.Component<AcceptedProps, myState> {
                       shrink: true,
                     }}
                     onChange={(e) => {
-                      this.props.setDate(e.target.value);
+                      this.setState({ date: e.target.value });
                     }}
                     // this.props.eventInfoIndex holds this events specific information
                     //this was stored in EventSchedule.tsx when the user clicked the edit icon
                     //Notice, how I can not dig into the contents using dot notation
-                    defaultValue={this.props.eventInfoIndex.date}
+                    defaultValue={this.state.date}
                   />
                 </form>
               </Grid>
@@ -150,9 +159,9 @@ class UpdateEvent extends React.Component<AcceptedProps, myState> {
                     type="text"
                     fullWidth
                     onChange={(e) => {
-                      this.props.setTitle(e.target.value);
+                      this.setState({ title: e.target.value });
                     }}
-                    defaultValue={this.props.eventInfoIndex.title}
+                    defaultValue={this.state.title}
                   />
                   <TextField
                     autoComplete="off"
@@ -163,9 +172,9 @@ class UpdateEvent extends React.Component<AcceptedProps, myState> {
                     type="text"
                     fullWidth
                     onChange={(e) => {
-                      this.props.setLocation(e.target.value);
+                      this.setState({ location: e.target.value });
                     }}
-                    defaultValue={this.props.eventInfoIndex.location}
+                    defaultValue={this.state.location}
                   />
                 </FormControl>{" "}
               </Grid>
@@ -179,9 +188,9 @@ class UpdateEvent extends React.Component<AcceptedProps, myState> {
                   label="Event Description"
                   type="text"
                   onChange={(e) => {
-                    this.props.setDescription(e.target.value);
+                    this.setState({ description: e.target.value });
                   }}
-                  defaultValue={this.props.eventInfoIndex.description}
+                  defaultValue={this.state.description}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -198,9 +207,9 @@ class UpdateEvent extends React.Component<AcceptedProps, myState> {
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     onChange={(e) => {
-                      this.props.setHours(e.target.value);
+                      this.setState({ hours: e.target.value as number });
                     }}
-                    defaultValue={this.props.eventInfoIndex.hours}
+                    defaultValue={this.state.hours}
                     //   value={age}
                     //   onChange={handleChange}
                   >
@@ -214,9 +223,7 @@ class UpdateEvent extends React.Component<AcceptedProps, myState> {
 
             <DialogActions>
               <Button
-                onClick={() => {
-                  this.handleClickClose();
-                }}
+                onClick={this.props.toggle}
               >
                 Cancel
               </Button>
@@ -226,7 +233,7 @@ class UpdateEvent extends React.Component<AcceptedProps, myState> {
             <Grid container justify="flex-end"></Grid>
           </DialogContent>{" "}
         </form>
-        {this.checkForEventEntry()}
+        {/* {this.checkForEventEntry()} */}
       </Dialog>
     );
   }

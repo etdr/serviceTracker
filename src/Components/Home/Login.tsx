@@ -31,28 +31,38 @@ function Copyright() {
 }
 
 type AcceptedProps = {
-  sessionToken: any;
-  updateToken: any;
-  email: any;
-  firstName: string;
-  lastName: string;
-  password: any;
-  setEmail: any;
-  setPassword: any;
-  classCode?: any;
-  setClassCode?: any;
-  setFirstName?: any;
-  setLastName?: any;
-  collectToken: any;
-  isAdmin: any;
-  setIsAdminTrue: any;
-  setIsAdminFalse: any;
-  setTeacherProfile: (e: any) => void;
+  sessionToken: string | null;
+  updateToken: (newToken: string | null) => void;
+  
+  // setEmail: any;
+  // setPassword: any;
+  // classCode?: any;
+  // setClassCode?: any;
+  // setFirstName?: any;
+  // setLastName?: any;
+  // collectToken: any;
+  // isAdmin: any;
+  // setIsAdminTrue: any;
+  // setIsAdminFalse: any;
+  // setTeacherProfile: (e: any) => void;
 };
 
-class Login extends React.Component<AcceptedProps, {}> {
+interface LoginState {
+  email: string;
+  // firstName: string;
+  // lastName: string;
+  password: string;
+}
+
+class Login extends React.Component<AcceptedProps, LoginState> {
   constructor(props: AcceptedProps) {
     super(props);
+    this.state = {
+      email: '',
+      // firstName: '',
+      // lastName: '',
+      password: ''
+    }
   }
 
   //Nested Fetches- This setup allows a student & a teacher to log in using the same form.
@@ -63,11 +73,11 @@ class Login extends React.Component<AcceptedProps, {}> {
       method: "POST",
       body: JSON.stringify({
         studentUser: {
-          firstName: this.props.firstName,
-          lastName: this.props.lastName,
-          email: this.props.email,
-          password: this.props.password,
-          classId: this.props.classCode,
+          // firstName: this.props.firstName,
+          // lastName: this.props.lastName,
+          email: this.state.email,
+          password: this.state.password,
+          // classId: this.props.classCode,
         },
       }),
       headers: new Headers({
@@ -83,17 +93,17 @@ class Login extends React.Component<AcceptedProps, {}> {
         return response.json();
       })
       .then((json) => {
-        this.props.setIsAdminFalse(false);
+        // this.props.setIsAdminFalse(false);
         this.props.updateToken(json.sessionToken);
         if (this.props.sessionToken) {
           console.log("yes");
         } else {
-          return fetch(`${API_URL}/teacheruser/login`, {
+          fetch(`${API_URL}/teacheruser/login`, {
             method: "POST",
             body: JSON.stringify({
               teacherUser: {
-                email: this.props.email,
-                password: this.props.password,
+                email: this.state.email,
+                password: this.state.password,
               },
             }),
             headers: new Headers({
@@ -109,13 +119,13 @@ class Login extends React.Component<AcceptedProps, {}> {
               return response.json();
             })
             .then((json) => {
-              this.props.setIsAdminTrue(true);
+              // this.props.setIsAdminTrue(true);
 
-              if (json !== undefined) {
-                this.props.setTeacherProfile(json);
-              } else {
-                this.props.setTeacherProfile([]);
-              }
+              // if (json !== undefined) {
+              //   this.props.setTeacherProfile(json);
+              // } else {
+              //   this.props.setTeacherProfile([]);
+              // }
               this.props.updateToken(json.sessionToken);
             });
         }
@@ -124,15 +134,15 @@ class Login extends React.Component<AcceptedProps, {}> {
 
   //This function searches to see if the user has a session token.
   //It then checks the status of isAdmin and pushes user to the appropriate page
-  checkForToken = () => {
-    if (!this.props.sessionToken || this.props.isAdmin === "") {
-      return <Redirect to="/" />;
-    } else if (this.props.isAdmin === false) {
-      return <Redirect to="/myDashboard" />;
-    } else {
-      return <Redirect to="/admindash" />;
-    }
-  };
+  // checkForToken = () => {
+  //   if (!this.props.sessionToken || this.props.isAdmin === "") {
+  //     return <Redirect to="/" />;
+  //   } else if (this.props.isAdmin === false) {
+  //     return <Redirect to="/myDashboard" />;
+  //   } else {
+  //     return <Redirect to="/admindash" />;
+  //   }
+  // };
 
   render() {
     return (
@@ -206,10 +216,9 @@ class Login extends React.Component<AcceptedProps, {}> {
                     name="email"
                     autoComplete="off"
                     onChange={(e) => {
-                      this.props.setEmail(e.target.value);
-                    
+                      this.setState({ email: e.target.value });
                     }}
-                    defaultValue={this.props.email}
+                    defaultValue={this.state.email}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -223,10 +232,9 @@ class Login extends React.Component<AcceptedProps, {}> {
                     id="password"
                     autoComplete="off"
                     onChange={(e) => {
-                      this.props.setPassword(e.target.value);
-                  
+                      this.setState({ password: e.target.value });
                     }}
-                    defaultValue={this.props.password}
+                    defaultValue={this.state.password}
                   />
                 </Grid>
                 <Grid item xs={12}></Grid>
@@ -265,7 +273,7 @@ class Login extends React.Component<AcceptedProps, {}> {
         >
           <Copyright />
         </div> */}
-        {this.checkForToken()}
+        {/* {this.checkForToken()} */}
       </Grid>
     );
   }
