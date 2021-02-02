@@ -1,27 +1,25 @@
 import React from "react";
 import "./App.css";
-import Signup from "./Components/Home/Signup";
+// import Signup from "./Components/Home/Signup";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
-import Login from "./Components/Home/Login";
-import SelectRole from "./Components/Home/SelectRole";
-import StudentPin from "./Components/Home/StudentPin";
-import AdminSignup from "./Components/Home/AdminSignup";
-import TeacherPin from "./Components/Home/TeacherPin";
-import MyDashboard from "./Components/StudentView/StudentDashboard/MyDashboard";
-import AddServiceHours from "./Components/StudentView/StudentDashboard/AddServiceHours";
-import UpdateServiceHours from "./Components/StudentView/StudentDashboard/UpdateServiceHours";
-import ViewEvents from "./Components/StudentView/ViewEvents";
-import AdminDash from "./Components/AdminView/AdminDash";
-import EventSchedule from "./Components/AdminView/Events/EventSchedule";
-import ManageAccounts from "./Components/AdminView/ManageAccounts";
+// import Login from "./Components/Home/Login";
+// import SelectRole from "./Components/Home/SelectRole";
+// import StudentPin from "./Components/Home/StudentPin";
+// import AdminSignup from "./Components/Home/AdminSignup";
+// import TeacherPin from "./Components/Home/TeacherPin";
+// import MyDashboard from "./Components/StudentView/StudentDashboard/MyDashboard";
+// import AddServiceHours from "./Components/StudentView/StudentDashboard/AddServiceHours";
+// import UpdateServiceHours from "./Components/StudentView/StudentDashboard/UpdateServiceHours";
+// import ViewEvents from "./Components/StudentView/ViewEvents";
+// import AdminDash from "./Components/AdminView/AdminDash";
+// import EventSchedule from "./Components/AdminView/Events/EventSchedule";
+// import ManageAccounts from "./Components/AdminView/ManageAccounts";
 
 import API_URL from './environment'
 
 import Auth from './Components/Auth/Auth'
 import TeacherView from './Components/AdminView/TeacherView'
 import StudentView from './Components/StudentView/StudentView'
-
-import ManageHoursTable from "./Components/AdminView/ManageHours";
 
 import * as T from './Components/types'
 
